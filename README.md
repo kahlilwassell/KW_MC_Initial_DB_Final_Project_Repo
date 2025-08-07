@@ -47,3 +47,10 @@ Write final report:
 
 ### Aug 18 (Sun): Submission & Presentation Prep
 - [ ] Submit PDF report
+
+# Installing necessary libraries
+1. Create a virtual environment in the directory where you cloned the repo
+2. run `pip install -r requirements.txt` to install the required modules.
+
+# References
+https://neo4j.com/docs/python-manual/current/
