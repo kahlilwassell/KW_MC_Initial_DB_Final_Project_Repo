@@ -126,7 +126,7 @@ if __name__ == "__main__":
     port = 7687
     uri = f"{scheme}://{host_name}:{port}"
     user = "neo4j"
-    password = "tian3401"
+    password = "<password>"
     database = "neo4j"
     app = App(uri, user, password, database)
     try:
