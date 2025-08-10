@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, Blueprint
 import neo4jconn
 import configparser
 
@@ -32,18 +32,24 @@ def create_app(config):
             conn.close()
 
 
-    @app.route("/movie/<title>")
+    @ver_bp.route("/movie/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
         return result
 
 
-    @app.route("/user/<username>")
+    @ver_bp.route("/user/<username>")
     def get_username(username):
         result = app.driver.find_user(username)
         return result
 
-    @app.route("/friends/<username>")
+    @ver_bp.route("/friends/<username>")
+    def get_friends(username):
+        result = app.driver.find_friends(username)
+        return result
+    return app
+
+    @ver_bp.route("/friends/connection", methods=["POST"])
     def get_friends(username):
         result = app.driver.find_friends(username)
         return result
@@ -53,5 +59,7 @@ def create_app(config):
 if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read("config.ini")
+    ver_bp = Blueprint(config["Flask"]["version"], __name__, url_prefix="/api/v1")
     app = create_app(config["Neo4jdb"])
+    app.register_blueprint(ver_bp)
     app.run(debug=True)
