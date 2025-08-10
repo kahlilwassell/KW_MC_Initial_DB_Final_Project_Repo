@@ -11,7 +11,7 @@ def connect_db():
         g.neo4j_conn = neo4jconn.App(
             uri=f"{scheme}://{host_name}:{port}",
             user="neo4j",
-            password="tian3401",
+            password="<password>",
             database="neo4j"
         )
     return g.neo4j_conn
