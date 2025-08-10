@@ -31,28 +31,94 @@ def create_app(config):
         if conn is not None:
             conn.close()
 
-
-    @ver_bp.route("/movie/<title>")
+    @ver_bp.route("/movies/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
         return result
 
+    @ver_bp.route("/movies")
+    def get_movies():
+        result = app.driver.get_movies()
+        return result
+
+    @ver_bp.route("/movie/<title>/ratings")
+    def get_movie_ratings(title):
+        result = app.driver.get_movie_ratings(title)
+        return result
+
+    @ver_bp.route("/movie/<title>/reviews")
+    def get_movie_reviews(title):
+        result = app.driver.get_movie_reviews(title)
+        return result
 
     @ver_bp.route("/user/<username>")
-    def get_username(username):
+    def get_user(username):
         result = app.driver.find_user(username)
         return result
 
-    @ver_bp.route("/friends/<username>")
+    @ver_bp.route("user/<username>/watchlist")
+    def get_watchlist(username):
+        data = request.get_json()
+        result = app.driver.connect_friends(data.get("username1"), data.get("username2"))
+        return result
+
+    @ver_bp.route("user/<username>/watchlist/new", methods=["POST"])
+    def set_watchlist(username):
+        data = request.get_json()
+        result = app.driver.connect_friends(data.get("username"))
+        return result
+
+    @ver_bp.route("user/<username>/watchlist", methods=["POST"])
+    def add_to_watchlist(username):
+        data = request.get_json()
+        print(f"data: {data}")
+        result = app.driver.add_movie(username, data.get("title"))
+        return result
+
+    @ver_bp.route("user/<username>/ratings")
+    def get_ratings(username):
+        result = app.driver.get_ratings(username)
+        return result
+
+    @ver_bp.route("user/<username>/ratings/new", methods=["POST"])
+    def add_to_watchlist(username):
+        data = request.get_json()
+        print(f"data: {data}")
+        result = app.driver.add_movie(username, data.get("title"), data.get("stars"))
+        return result
+    
+    @ver_bp.route("user/<username>/reviews")
+    def get_reviews(username):
+        result = app.driver.get_reviews(username)
+        return result
+
+    @ver_bp.route("user/<username>/review/new", methods=["POST"])
+    def add_review(username):
+        data = request.get_json()
+        print(f"data: {data}")
+        result = app.driver.add_movie(username, data.get("title"), data.get("stars"))
+        return result
+
+    @ver_bp.route("user/<username>/friends")
     def get_friends(username):
         result = app.driver.find_friends(username)
         return result
 
-    @ver_bp.route("/friends/connection", methods=["POST"])
+    @ver_bp.route("/friends/new", methods=["POST"])
     def set_friends():
         data = request.get_json()
         print(f"data: {data}")
         result = app.driver.connect_friends(data.get("username1"), data.get("username2"))
+        return result
+
+    @ver_bp.route("user/<username>/friends/network")
+    def get_friends_network(username):
+        result = app.driver.find_friends_network(username)
+        return result
+
+    @ver_bp.route("user/<username>/movies/recommendations")
+    def get_movie_recommendations(username):
+        result = app.driver.get_movie_recommendations(username)
         return result
 
     return app

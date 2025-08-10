@@ -75,7 +75,8 @@ class Neo4jDb:
 
     def _find_and_return_movie(self, title):
         query = (
-            "MATCH (m:Movie {title: $title})<-[:DIRECTED]-(d:Director) "
+            "MATCH (m:Movie {title: $title}) "
+            "OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director) "
             "RETURN m.title AS title, m.year AS year, d.name AS director"
         )
         try:
