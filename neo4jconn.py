@@ -25,13 +25,17 @@ class Neo4jDb:
             "MATCH (u:User {userName: $username}) "
             "RETURN u.firstName AS firstName, u.lastName AS lastName, u.email AS email"
         )
-        records = self.driver.execute_query(
-            query, username=username,
-            database_=self.database,routing=RoutingControl.READ,
-            result_transformer_=lambda r: r.data("firstName","lastName","email")
-        )
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("firstName","lastName","email")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
-        return records
 
     def create_friendship(self, user1_name, user2_name):
         with self.driver.session() as session:
@@ -73,12 +77,16 @@ class Neo4jDb:
             "MATCH (:User {name:$username})-[:FRIENDS_WITH]->(u:User) "
             "RETURN u.firstName AS firstName, u.lastName AS lastName, u.email AS email"
         )
-        records = self.driver.execute_query(
-            query, username=username,
-            database_=self.database, routing_=RoutingControl.READ,
-            result_transformer_=lambda r: r.data("firstName","lastName","email")
-        )
-        return records
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database, routing_=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("firstName","lastName","email")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
     def find_movie(self, title):
         with self.driver.session() as session:
@@ -90,13 +98,16 @@ class Neo4jDb:
             "MATCH (m:Movie {title: $title})<-[:DIRECTED]-(d:Director) "
             "RETURN m.title AS title, m.year AS year, d.name AS director"
         )
-        records = self.driver.execute_query(
-            query, title=title,
-            database_=self.database,routing=RoutingControl.READ,
-            result_transformer_=lambda r: r.data("title","year","director")
-        )
-
-        return records
+        try:
+            records = self.driver.execute_query(
+                query, title=title,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("title","year","director")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
 
     def find_movie_by_genre(self, genre):
@@ -120,17 +131,18 @@ class Neo4jDb:
 
         return results
 
+# TODO: Remove after testing
 if __name__ == "__main__":
     scheme = "neo4j"
     host_name = "127.0.0.1"
     port = 7687
     uri = f"{scheme}://{host_name}:{port}"
     user = "neo4j"
-    password = "<password>"
+    password = "your_password"
     database = "neo4j"
     app = Neo4jDb(uri, user, password, database)
     try:
         app.find_movie("The Godfather")
-        # app.find_movie_by_genre("Sci-Fi")
+        app.find_movie_by_genre("Sci-Fi")
     finally:
         app.close()
