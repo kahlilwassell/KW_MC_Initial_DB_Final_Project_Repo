@@ -1,27 +1,28 @@
-from flask import Flask, jsonify, g
-import json
+from flask import Flask, g
 import neo4jconn
+import configparser
 
 
-def connect_db():
+def connect_db(config):
+
     if 'neo4j_conn' not in g:
-        scheme = "neo4j"
-        host_name = "127.0.0.1"
-        port = 7687
-        g.neo4j_conn = neo4jconn.App(
+        scheme = config["scheme"]
+        host_name = config["host_name"]
+        port = config["port"]
+        g.neo4j_conn = neo4jconn.Neo4jDb(
             uri=f"{scheme}://{host_name}:{port}",
-            user="neo4j",
-            password="<password>",
-            database="neo4j"
+            user=config["user"],
+            password=config["password"],
+            database=config["database"]
         )
     return g.neo4j_conn
 
 
-def create_app():
+def create_app(config):
     app = Flask(__name__)
 
     with app.app_context():
-        app.driver = connect_db()
+        app.driver = connect_db(config)
 
     @app.teardown_appcontext
     def close_db(exception):
@@ -34,23 +35,23 @@ def create_app():
     @app.route("/movie/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
-        return jsonify(result)
+        return result
 
 
     @app.route("/user/<username>")
     def get_username(username):
-        print(f"username0: {username}")
         result = app.driver.find_user(username)
-        return jsonify(result)
+        return result
 
     @app.route("/friends/<username>")
     def get_friends(username):
-        print(f"username0: {username}")
         result = app.driver.find_friends(username)
-        return jsonify(result)
+        return result
     return app
 
 
 if __name__ == "__main__":
-    app = create_app()
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    app = create_app(config["Neo4jdb"])
     app.run(debug=True)

@@ -4,7 +4,7 @@ from neo4j import GraphDatabase, RoutingControl
 from neo4j.exceptions import DriverError, Neo4jError
 
 
-class App:
+class Neo4jDb:
 
     def __init__(self, uri, user, password, database=None):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     user = "neo4j"
     password = "<password>"
     database = "neo4j"
-    app = App(uri, user, password, database)
+    app = Neo4jDb(uri, user, password, database)
     try:
         app.find_movie("The Godfather")
         # app.find_movie_by_genre("Sci-Fi")
