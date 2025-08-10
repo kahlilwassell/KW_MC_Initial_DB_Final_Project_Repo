@@ -1,4 +1,4 @@
-from flask import Flask, g, Blueprint
+from flask import Flask, g, Blueprint, request
 import neo4jconn
 import configparser
 
@@ -47,12 +47,14 @@ def create_app(config):
     def get_friends(username):
         result = app.driver.find_friends(username)
         return result
-    return app
 
     @ver_bp.route("/friends/connection", methods=["POST"])
-    def get_friends(username):
-        result = app.driver.find_friends(username)
+    def set_friends():
+        data = request.get_json()
+        print(f"data: {data}")
+        result = app.driver.connect_friends(data.get("username1"), data.get("username2"))
         return result
+
     return app
 
 

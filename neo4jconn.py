@@ -13,54 +13,34 @@ class Neo4jDb:
     def close(self):
         self.driver.close()
 
-    def find_user(self, username):
-        with self.driver.session() as session:
-            print(f"username1: {username}")
-            user = self._find_and_return_user_by_username(username)
-        return user
-
-    def _find_and_return_user_by_username(self, username):
-        print(f"username2: {username}")
-        query = (
-            "MATCH (u:User {userName: $username}) "
-            "RETURN u.firstName AS firstName, u.lastName AS lastName, u.email AS email"
-        )
-        try:
-            records = self.driver.execute_query(
-                query, username=username,
-                database_=self.database,routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("firstName","lastName","email")
-            )
-            return records
-        except (DriverError, Neo4jError) as exception:
-            logging.error("%s raised an error: \n%s", query, exception)
-            raise
-
-
-    def create_friendship(self, user1_name, user2_name):
+    def connect_friends(self, username1, username2):
+        print(f"u1: {username1} u2: {username2}")
         with self.driver.session() as session:
             # Write transactions allow the driver to handle retries and
             # transient errors
             result = self._create_and_return_friendship(
-                user1_name, user2_name
+                username1, username2
             )
             print("Created friendship between: "
-                  f"{result['u1']}, {result['u2']}")
+                  f"{result['username1']}, {result['username2']}")
+        return result
 
-    def _create_and_return_friendship(self, user1_name, user2_name):
+    def _create_and_return_friendship(self, username1, username2):
+        print(f"Inside connection fn -> u1:{username1}, u2:{username2}")
         query = (
-            "CREATE (u1:user { name: $user1_name }) "
-            "CREATE (u2:user { name: $user2_name }) "
-            "CREATE (u1)-[:FRIENDS_WITH]->(u2) "
-            "RETURN u1.name, u2.name"
+            "MATCH (u1:User { userName: $username1}) "
+            "MATCH (u2:User { userName: $username2}) "
+            "MERGE (u1)-[:FRIENDS_WITH]->(u2) "
+            "MERGE (u2)-[:FRIENDS_WITH]->(u1) "
+            "RETURN u1.firstName AS username1, u2.firstName AS username2"
         )
         try:
             record = self.driver.execute_query(
-                query, user1_name=user1_name, user2_name=user2_name,
+                query, username1=username1, username2=username2,
                 database_=self.database,
                 result_transformer_=lambda r: r.single(strict=True)
             )
-            return {"u1": record["u1.name"], "u2": record["u2.name"]}
+            return {"username1": record["username1"], "username2": record["username2"]}
         # Capture any errors along with the query and data for traceability
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
