@@ -4,7 +4,6 @@ import configparser
 
 
 def connect_db(config):
-
     if 'neo4j_conn' not in g:
         scheme = config["scheme"]
         host_name = config["host_name"]
@@ -32,24 +31,25 @@ def create_app(config):
             conn.close()
 
     # Checked
-    @ver_bp.route("/movies/<title>")
+    @ver_bp.route("/movie/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
         return result
 
+    # Checked
     @ver_bp.route("/movies")
     def get_movies():
-        result = app.driver.get_movies()
+        result = app.driver.find_movies()
         return result
 
     @ver_bp.route("/movie/<title>/ratings")
     def get_movie_ratings(title):
-        result = app.driver.get_movie_ratings(title)
+        result = app.driver.find_movie_ratings(title)
         return result
 
     @ver_bp.route("/movie/<title>/reviews")
     def get_movie_reviews(title):
-        result = app.driver.get_movie_reviews(title)
+        result = app.driver.find_movie_reviews(title)
         return result
 
     def _format_names(fullname):
@@ -64,20 +64,26 @@ def create_app(config):
 
     # Checked
     @ver_bp.route("movies/director/<fullname>")
-    def get_director(fullname):
+    def get_movies_by_director(fullname):
         first_name, last_name = _format_names(fullname)
-        print(f"first_name: {first_name} last_name {last_name}")
         result = app.driver.find_movies_by_director(first_name, last_name)
         return result
 
     # Checked
     @ver_bp.route("movies/actor/<fullname>")
-    def get_actor(fullname):
+    def get_movies_by_actor(fullname):
         first_name, last_name = _format_names(fullname)
-        print(f"first_name: {first_name} last_name {last_name}")
         result = app.driver.find_movies_by_actor(first_name, last_name)
         return result
 
+    # Checked
+    @ver_bp.route("movies/genre/<genre>")
+    def get_movies_by_genre(genre):
+        first_name, last_name = _format_names(genre)
+        result = app.driver.find_movies_by_genre(genre)
+        return result
+    
+    # Checked
     @ver_bp.route("/user/<username>")
     def get_user(username):
         result = app.driver.find_user(username)
@@ -85,29 +91,29 @@ def create_app(config):
 
     @ver_bp.route("user/<username>/watchlist")
     def get_watchlist(username):
-        result = app.driver.get_watchlist(username)
+        result = app.driver.find_watchlist(username)
         return result
 
     @ver_bp.route("user/<username>/watchlist/new", methods=["POST"])
     def set_watchlist(username):
         data = request.get_json()
-        result = app.driver.connect_friends(data.get("username"))
+        result = app.driver.add_watchlist(data.get("username"))
         return result
 
     @ver_bp.route("user/<username>/watchlist", methods=["POST"])
-    def add_to_watchlist(username):
+    def set_to_watchlist(username):
         data = request.get_json()
         print(f"data: {data}")
         result = app.driver.add_to_watchlist(username, data.get("title"))
         return result
 
     @ver_bp.route("user/<username>/ratings")
-    def get_ratings(username):
-        result = app.driver.get_ratings(username)
+    def get_ratings_by_user(username):
+        result = app.driver.find_ratings_by_user(username)
         return result
 
     @ver_bp.route("user/<username>/ratings/new", methods=["POST"])
-    def add_rating(username):
+    def set_rating(username):
         data = request.get_json()
         print(f"data: {data}")
         result = app.driver.add_rating(username, data.get("title"), data.get("stars"))
@@ -115,11 +121,11 @@ def create_app(config):
     
     @ver_bp.route("user/<username>/reviews")
     def get_reviews(username):
-        result = app.driver.get_reviews(username)
+        result = app.driver.find_reviews_by_user(username)
         return result
 
     @ver_bp.route("user/<username>/review/new", methods=["POST"])
-    def add_review(username):
+    def set_review(username):
         data = request.get_json()
         print(f"data: {data}")
         result = app.driver.add_review(username, data.get("title"), data.get("content"))
@@ -146,7 +152,7 @@ def create_app(config):
 
     @ver_bp.route("user/<username>/movies/recommendations")
     def get_movie_recommendations(username):
-        result = app.driver.get_movie_recommendations(username)
+        result = app.driver.find_movie_recommendations(username)
         return result
 
     return app
