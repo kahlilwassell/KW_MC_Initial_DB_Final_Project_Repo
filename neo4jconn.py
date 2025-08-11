@@ -54,7 +54,7 @@ class Neo4jDb:
 
     def _find_and_return_friends(self, username):
         query = (
-            "MATCH (:User {name:$username})-[:FRIENDS_WITH]->(u:User) "
+            "MATCH (:User {userName:$username})-[:FRIENDS_WITH]->(u:User) "
             "RETURN u.firstName AS firstName, u.lastName AS lastName, u.email AS email"
         )
         try:
@@ -77,53 +77,64 @@ class Neo4jDb:
         query = (
             "MATCH (m:Movie {title: $title}) "
             "OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director) "
-            "RETURN m.title AS title, m.year AS year, d.name AS director"
+            "OPTIONAL MATCH (m)<-[:FEATURED_IN]-(a:Actor)"
+            "RETURN m.title AS title, m.year AS year, d.name AS director, collect(a.firstName+a.lastName) AS actors"
         )
         try:
             records = self.driver.execute_query(
                 query, title=title,
                 database_=self.database,routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("title","year","director")
+                result_transformer_=lambda r: r.data("title","year","director","actors")
             )
             return records
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
+    def find_movies_by_director(self, first_name, last_name):
+        with self.driver.session() as session:
+            movies = self._find_and_return_movies_by_director(first_name, last_name)
+        return movies
+
+    def _find_and_return_movies_by_director(self, first_name, last_name):
+        query = (
+            "MATCH (m:Movie)<-[:DIRECTED]-(d:Director {firstName:$first_name, lastName:$last_name}) "
+            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, first_name=first_name,last_name=last_name,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movies")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
+
+    def find_movies_by_actor(self, first_name, last_name):
+        with self.driver.session() as session:
+            movies = self._find_and_return_movies_by_actor(first_name, last_name)
+        return movies
+
+    def _find_and_return_movies_by_actor(self, first_name, last_name):
+        query = (
+            "MATCH (m:Movie)<-[:FEATURED_IN]-(a:Actor {firstName:$first_name, lastName:$last_name}) "
+            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, first_name=first_name,last_name=last_name,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movies")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
     def find_movie_by_genre(self, genre):
-        movies = self._find_and_return_movies_by_genre(genre)
-        print(movies)
-        for movie in movies:
-            print(movie)
-            for x in movie:
-                print(x)
+        pass
 
     def _find_and_return_movies_by_genre(self, genre):
-        query = (
-            "MATCH (m:Movie {genre: $genre})"
-            "RETURN m.title AS title, m.genre AS genre, m.year AS year"
-        )
-        results = self.driver.execute_query(
-            query, genre=genre,
-            database_=self.database, routing=RoutingControl.READ,
-            result_transformer_=lambda r: r.values("title", "genre", "year")
-        )
-
-        return results
-
-# TODO: Remove after testing
-if __name__ == "__main__":
-    scheme = "neo4j"
-    host_name = "127.0.0.1"
-    port = 7687
-    uri = f"{scheme}://{host_name}:{port}"
-    user = "neo4j"
-    password = "your_password"
-    database = "neo4j"
-    app = Neo4jDb(uri, user, password, database)
-    try:
-        app.find_movie("The Godfather")
-        app.find_movie_by_genre("Sci-Fi")
-    finally:
-        app.close()
+        pass
