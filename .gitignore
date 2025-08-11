@@ -37,11 +37,3 @@ Thumbs.db
 
 # Jupyter Notebooks (if any)
 .ipynb_checkpoints/
-
-# Data
-data/
-*.csv
-*.tsv
-*.json
-
-# GU

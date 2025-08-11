@@ -1,0 +1,251 @@
+movieId,title,genre,year
+tt0369610,Jurassic World,"Action, Adventure, Sci-Fi",2015
+tt3774694,Love,"Drama, Romance",2015
+tt2361509,The Intern,"Comedy, Drama",2015
+tt2381249,Mission: Impossible - Rogue Nation,"Action, Adventure, Thriller",2015
+tt3460252,The Hateful Eight,"Crime, Drama, Mystery",2015
+tt1392190,Mad Max: Fury Road,"Action, Adventure, Sci-Fi",2015
+tt3397884,Sicario,"Action, Crime, Drama",2015
+tt1596363,The Big Short,"Biography, Comedy, Drama",2015
+tt3659388,The Martian,"Adventure, Drama, Sci-Fi",2015
+tt1663202,The Revenant,"Adventure, Drama, Western",2015
+tt2140379,Self/less,"Action, Mystery, Sci-Fi",2015
+tt2494362,Bone Tomahawk,"Drama, Horror, Western",2015
+tt4263482,The Witch,"Drama, Fantasy, Horror",2015
+tt2395427,Avengers: Age of Ultron,"Action, Adventure, Sci-Fi",2015
+tt3569230,Legend,"Biography, Crime, Drama",2015
+tt1895587,Spotlight,"Biography, Crime, Drama",2015
+tt1638355,The Man from U.N.C.L.E.,"Action, Adventure, Comedy",2015
+tt2488496,Star Wars: Episode VII - The Force Awakens,"Action, Adventure, Sci-Fi",2015
+tt3464902,The Lobster,"Drama, Romance, Sci-Fi",2015
+tt3076658,Creed,"Action, Drama, Sport",2015
+tt2096673,Inside Out,"Animation, Adventure, Comedy",2015
+tt2379713,Spectre,"Action, Adventure, Thriller",2015
+tt0478970,Ant-Man,"Action, Comedy, Sci-Fi",2015
+tt1951266,The Hunger Games: Mockingjay - Part 2,"Action, Adventure, Sci-Fi",2015
+tt1661199,Cinderella,"Adventure, Drama, Family",2015
+tt2140479,The Accountant,"Action, Crime, Drama",2016
+tt3748528,Rogue One: A Star Wars Story,"Action, Adventure, Sci-Fi",2016
+tt2543164,Arrival,"Drama, Mystery, Sci-Fi",2016
+tt4016934,The Handmaiden,"Drama, Romance, Thriller",2016
+tt2119532,Hacksaw Ridge,"Biography, Drama, History",2016
+tt3783958,La La Land,"Comedy, Drama, Music",2016
+tt2948356,Zootopia,"Animation, Action, Adventure",2016
+tt3799694,The Nice Guys,"Action, Comedy, Crime",2016
+tt2674426,Me Before You,"Drama, Romance",2016
+tt4972582,Split,"Horror, Thriller",2016
+tt5700672,Train to Busan,"Action, Horror, Thriller",2016
+tt4846340,Hidden Figures,"Biography, Drama, History",2016
+tt1431045,Deadpool,"Action, Comedy, Sci-Fi",2016
+tt5311514,Your Name.,"Animation, Drama, Fantasy",2016
+tt4975722,Moonlight,Drama,2016
+tt4034228,Manchester by the Sea,Drama,2016
+tt2404435,The Magnificent Seven,"Action, Adventure, Drama",2016
+tt2975590,Batman v Superman: Dawn of Justice,"Action, Adventure, Sci-Fi",2016
+tt3470600,Sing,"Animation, Comedy, Family",2016
+tt2582782,Hell or High Water,"Crime, Drama, Thriller",2016
+tt3521164,Moana,"Animation, Adventure, Comedy",2016
+tt3110958,Now You See Me 2,"Action, Adventure, Comedy",2016
+tt3498820,Captain America: Civil War,"Action, Sci-Fi",2016
+tt0490215,Silence,"Drama, History",2016
+tt4257926,Miracles from Heaven,"Biography, Drama, Family",2016
+tt1856101,Blade Runner 2049,"Action, Drama, Mystery",2017
+tt5052448,Get Out,"Horror, Mystery, Thriller",2017
+tt1396484,It,Horror,2017
+tt1959563,The Hitman's Bodyguard,"Action, Comedy, Crime",2017
+tt4425200,John Wick: Chapter 2,"Action, Crime, Thriller",2017
+tt3829920,Only the Brave,"Action, Biography, Drama",2017
+tt5013056,Dunkirk,"Action, Drama, History",2017
+tt5726616,Call Me by Your Name,"Drama, Romance",2017
+tt2283362,Jumanji: Welcome to the Jungle,"Action, Adventure, Comedy",2017
+tt1485796,The Greatest Showman,"Biography, Drama, Musical",2017
+tt1790809,Pirates of the Caribbean: Dead Men Tell No Tales,"Action, Adventure, Fantasy",2017
+tt3532216,American Made,"Action, Comedy, Crime",2017
+tt5362988,Wind River,"Crime, Drama, Mystery",2017
+tt3501632,Thor: Ragnarok,"Action, Adventure, Comedy",2017
+tt5027774,"Three Billboards Outside Ebbing, Missouri","Comedy, Crime, Drama",2017
+tt3890160,Baby Driver,"Action, Crime, Drama",2017
+tt2380307,Coco,"Animation, Adventure, Drama",2017
+tt5580390,The Shape of Water,"Drama, Fantasy, Romance",2017
+tt3315342,Logan,"Action, Drama, Sci-Fi",2017
+tt2250912,Spider-Man: Homecoming,"Action, Adventure, Sci-Fi",2017
+tt5638642,The Ritual,"Horror, Mystery, Thriller",2017
+tt5776858,Phantom Thread,"Drama, Romance",2017
+tt4481414,Gifted,Drama,2017
+tt0974015,Justice League,"Action, Adventure, Fantasy",2017
+tt2527336,Star Wars: Episode VIII - The Last Jedi,"Action, Adventure, Fantasy",2017
+tt4881806,Jurassic World: Fallen Kingdom,"Action, Adventure, Sci-Fi",2018
+tt4912910,Mission: Impossible - Fallout,"Action, Adventure, Thriller",2018
+tt6966692,Green Book,"Biography, Comedy, Drama",2018
+tt7784604,Hereditary,"Drama, Horror, Mystery",2018
+tt4154756,Avengers: Infinity War,"Action, Adventure, Sci-Fi",2018
+tt1825683,Black Panther,"Action, Adventure, Sci-Fi",2018
+tt4633694,Spider-Man: Into the Spider-Verse,"Animation, Action, Adventure",2018
+tt6499752,Upgrade,"Action, Sci-Fi, Thriller",2018
+tt1259528,Den of Thieves,"Action, Crime, Drama",2018
+tt2798920,Annihilation,"Adventure, Drama, Horror",2018
+tt7040874,A Simple Favor,"Comedy, Crime, Mystery",2018
+tt6644200,A Quiet Place,"Drama, Horror, Sci-Fi",2018
+tt1677720,Ready Player One,"Action, Adventure, Sci-Fi",2018
+tt2704998,Game Night,"Action, Adventure, Comedy",2018
+tt1517451,A Star Is Born,"Drama, Music, Romance",2018
+tt7401588,Instant Family,"Comedy, Drama",2018
+tt1226837,Beautiful Boy,"Biography, Drama",2018
+tt1270797,Venom,"Action, Adventure, Sci-Fi",2018
+tt8267604,Capernaum,Drama,2018
+tt5083738,The Favourite,"Biography, Comedy, Drama",2018
+tt1727824,Bohemian Rhapsody,"Biography, Drama, Music",2018
+tt5463162,Deadpool 2,"Action, Adventure, Comedy",2018
+tt2873282,Red Sparrow,"Action, Drama, Thriller",2018
+tt3104988,Crazy Rich Asians,"Comedy, Drama, Romance",2018
+tt3778644,Solo: A Star Wars Story,"Action, Adventure, Sci-Fi",2018
+tt6751668,Parasite,"Drama, Thriller",2019
+tt7131622,Once Upon a Time... in Hollywood,"Comedy, Drama",2019
+tt1950186,Ford v Ferrari,"Action, Biography, Drama",2019
+tt4154796,Avengers: Endgame,"Action, Adventure, Sci-Fi",2019
+tt8946378,Knives Out,"Comedy, Crime, Drama",2019
+tt8772262,Midsommar,"Drama, Horror, Mystery",2019
+tt8367814,The Gentlemen,"Action, Crime",2019
+tt7547410,Dora and the Lost City of Gold,"Action, Adventure, Comedy",2019
+tt7286456,Joker,"Crime, Drama, Thriller",2019
+tt2386490,How to Train Your Dragon: The Hidden World,"Animation, Action, Adventure",2019
+tt6146586,John Wick: Chapter 3 - Parabellum,"Action, Crime, Drama",2019
+tt8579674,1917,"Action, Drama, War",2019
+tt6857112,Us,"Horror, Mystery, Thriller",2019
+tt2527338,Star Wars: Episode IX - The Rise of Skywalker,"Action, Adventure, Fantasy",2019
+tt1302006,The Irishman,"Biography, Crime, Drama",2019
+tt3281548,Little Women,"Drama, Romance",2019
+tt0103639,Aladdin,"Animation, Adventure, Comedy",2019
+tt5727208,Uncut Gems,"Crime, Drama, Thriller",2019
+tt8613070,Portrait of a Lady on Fire,"Drama, Romance",2019
+tt7984734,The Lighthouse,"Drama, Fantasy, Horror",2019
+tt7798634,Ready or Not,"Action, Comedy, Horror",2019
+tt4139588,Polar,"Action, Crime, Thriller",2019
+tt7349950,It: Chapter Two,"Drama, Fantasy, Horror",2019
+tt2584384,Jojo Rabbit,"Comedy, Drama, War",2019
+tt1488606,Triple Frontier,"Action, Thriller",2019
+tt7556122,The Old Guard,"Action, Thriller",2020
+tt8503618,Hamilton,"Biography, Drama, History",2020
+tt6723592,Tenet,"Action, Sci-Fi, Thriller",2020
+tt9484998,Palm Springs,"Comedy, Fantasy, Mystery",2020
+tt2106476,The Hunt,Drama,2020
+tt10272386,The Father,"Drama, Mystery",2020
+tt9620292,Promising Young Woman,"Crime, Drama, Mystery",2020
+tt10288566,Another Round,"Comedy, Drama",2020
+tt1051906,The Invisible Man,"Drama, Horror, Mystery",2020
+tt7395114,The Devil All the Time,"Crime, Drama, Thriller",2020
+tt6048922,Greyhound,"Drama, History, War",2020
+tt2948372,Soul,"Animation, Adventure, Comedy",2020
+tt8936646,Extraction,"Action, Crime, Thriller",2020
+tt3794354,Sonic the Hedgehog,"Action, Adventure, Comedy",2020
+tt8633478,Run,"Drama, Horror, Mystery",2020
+tt7737786,Greenland,"Action, Thriller",2020
+tt9214832,Emma.,"Comedy, Drama, Romance",2020
+tt11032374,Demon Slayer: Kimetsu no Yaiba - The Movie: Mugen Train,"Animation, Action, Adventure",2020
+tt7711170,Alone,"Drama, Mystery, Thriller",2020
+tt5867314,The Empty Man,"Drama, Horror, Mystery",2020
+tt7846844,Enola Holmes,"Adventure, Crime, Drama",2020
+tt6772802,Hillbilly Elegy,"Biography, Drama",2020
+tt8332922,A Quiet Place Part II,"Drama, Horror, Sci-Fi",2020
+tt1911644,The Call,"Drama, Horror, Thriller",2020
+tt7939766,I'm Thinking of Ending Things,"Drama, Thriller",2020
+tt1160419,Dune: Part One,"Action, Adventure, Drama",2021
+tt7888964,Nobody,"Action, Crime, Drama",2021
+tt10872600,Spider-Man: No Way Home,"Action, Adventure, Fantasy",2021
+tt2382320,No Time to Die,"Action, Adventure, Thriller",2021
+tt11083552,Wrath of Man,"Action, Crime, Thriller",2021
+tt9032400,Eternals,"Action, Adventure, Fantasy",2021
+tt6334354,The Suicide Squad,"Action, Adventure, Comedy",2021
+tt3480822,Black Widow,"Action, Adventure, Sci-Fi",2021
+tt9620288,King Richard,"Biography, Drama, Sport",2021
+tt8385148,Hitman's Wife's Bodyguard,"Action, Comedy, Crime",2021
+tt10370710,The Worst Person in the World,"Comedy, Drama, Romance",2021
+tt11286314,Don't Look Up,"Comedy, Drama, Sci-Fi",2021
+tt11235772,The Voyeurs,"Drama, Mystery, Romance",2021
+tt7144666,The Black Phone,"Horror, Mystery, Thriller",2021
+tt9777666,The Tomorrow War,"Action, Adventure, Drama",2021
+tt10366460,CODA,"Comedy, Drama, Music",2021
+tt6264654,Free Guy,"Action, Adventure, Comedy",2021
+tt12361974,Zack Snyder's Justice League,"Action, Adventure, Fantasy",2021
+tt9376612,Shang-Chi and the Legend of the Ten Rings,"Action, Adventure, Fantasy",2021
+tt11271038,Licorice Pizza,"Comedy, Drama, Romance",2021
+tt2953050,Encanto,"Animation, Comedy, Family",2021
+tt9639470,Last Night in Soho,"Drama, Horror, Mystery",2021
+tt6856242,The King's Man,"Action, Adventure, Thriller",2021
+tt7991608,Red Notice,"Action, Comedy, Thriller",2021
+tt9421570,The Guilty,"Crime, Drama, Thriller",2021
+tt1745960,Top Gun: Maverick,"Action, Drama",2022
+tt8760708,M3GAN,"Horror, Sci-Fi, Thriller",2022
+tt12593682,Bullet Train,"Action, Comedy, Thriller",2022
+tt10638522,Talk to Me,"Horror, Thriller",2022
+tt15791034,Barbarian,"Horror, Mystery, Thriller",2022
+tt1877830,The Batman,"Action, Crime, Drama",2022
+tt13560574,X,"Horror, Mystery, Thriller",2022
+tt9764362,The Menu,"Comedy, Horror, Thriller",2022
+tt11866324,Prey,"Action, Adventure, Horror",2022
+tt6710474,Everything Everywhere All at Once,"Action, Adventure, Comedy",2022
+tt10640346,Babylon,"Comedy, Drama",2022
+tt9114286,Black Panther: Wakanda Forever,"Action, Adventure, Drama",2022
+tt11813216,The Banshees of Inisherin,"Comedy, Drama",2022
+tt19770238,Aftersun,Drama,2022
+tt18925334,Pearl,"Drama, Horror, Thriller",2022
+tt11138512,The Northman,"Action, Adventure, Drama",2022
+tt15325794,Fall,"Action, Thriller",2022
+tt1649418,The Gray Man,"Action, Mystery, Thriller",2022
+tt11564570,Glass Onion,"Comedy, Crime, Drama",2022
+tt10731256,Don't Worry Darling,"Drama, Mystery, Thriller",2022
+tt10954984,Nope,"Horror, Mystery, Sci-Fi",2022
+tt1464335,Uncharted,"Action, Adventure",2022
+tt1630029,Avatar: The Way of Water,"Action, Adventure, Fantasy",2022
+tt15474916,Smile,"Horror, Mystery, Thriller",2022
+tt10648342,Thor: Love and Thunder,"Action, Adventure, Comedy",2022
+tt15398776,Oppenheimer,"Biography, Drama, History",2023
+tt9603212,Mission: Impossible - Dead Reckoning Part One,"Action, Adventure, Thriller",2023
+tt10366206,John Wick: Chapter 4,"Action, Crime, Thriller",2023
+tt22375054,Strange Darling,"Horror, Thriller",2023
+tt10545296,The Hunger Games: The Ballad of Songbirds & Snakes,"Action, Adventure, Drama",2023
+tt15671028,No Hard Feelings,"Comedy, Romance",2023
+tt26047818,Anyone But You,"Comedy, Romance",2023
+tt5884796,Plane,"Action, Adventure, Thriller",2023
+tt3107288,The Flash,"Action, Adventure, Drama",2023
+tt1517268,Barbie,"Adventure, Comedy, Fantasy",2023
+tt14230458,Poor Things,"Comedy, Drama, Romance",2023
+tt9362722,Spider-Man: Across the Spider-Verse,"Animation, Action, Adventure",2023
+tt5537002,Killers of the Flower Moon,"Crime, Drama, History",2023
+tt20215968,Hit Man,"Comedy, Crime, Romance",2023
+tt13238346,Past Lives,"Drama, Romance",2023
+tt4495098,Gran Turismo,"Action, Adventure, Drama",2023
+tt17351924,Saltburn,"Drama, Thriller",2023
+tt6791350,Guardians of the Galaxy Vol. 3,"Action, Adventure, Comedy",2023
+tt7160372,The Zone of Interest,"Drama, History, War",2023
+tt23849204,12th Fail,"Biography, Drama",2023
+tt11858890,The Creator,"Action, Adventure, Drama",2023
+tt21064584,The Iron Claw,"Biography, Drama, Sport",2023
+tt17009710,Anatomy of a Fall,"Crime, Drama, Thriller",2023
+tt2906216,Dungeons & Dragons: Honor Among Thieves,"Action, Adventure, Comedy",2023
+tt4873118,The Covenant,"Action, Drama, Thriller",2023
+tt5040012,Nosferatu,"Fantasy, Horror, Mystery",2024
+tt28015403,Heretic,"Horror, Thriller",2024
+tt9218128,Gladiator II,"Action, Adventure, Drama",2024
+tt28607951,Anora,"Comedy, Drama, Romance",2024
+tt1262426,Wicked,"Fantasy, Musical, Romance",2024
+tt27131358,We Live in Time,"Drama, Romance",2024
+tt17526714,The Substance,"Drama, Horror, Sci-Fi",2024
+tt8999762,The Brutalist,Drama,2024
+tt11563598,A Complete Unknown,"Biography, Drama, Music",2024
+tt15239678,Dune: Part Two,"Action, Adventure, Drama",2024
+tt12584954,Twisters,"Action, Adventure, Thriller",2024
+tt29623480,The Wild Robot,"Animation, Sci-Fi",2024
+tt20215234,Conclave,"Drama, Thriller",2024
+tt26625693,The Order,"Crime, Drama, Thriller",2024
+tt1431045,Deadpool & Wolverine,"Action, Comedy, Sci-Fi",2024
+tt5177120,The Ministry of Ungentlemanly Warfare,"Action, Comedy, War",2024
+tt12037194,Furiosa: A Mad Max Saga,"Action, Adventure, Sci-Fi",2024
+tt27534307,Speak No Evil,"Drama, Horror, Thriller",2024
+tt15314262,The Beekeeper,"Action, Crime, Thriller",2024
+tt14961016,I'm Still Here,"Biography, Drama, History",2024
+tt18259086,Sonic the Hedgehog 3,"Action, Adventure, Comedy",2024
+tt21382296,Carry-On,"Action, Crime, Thriller",2024
+tt28249919,Presence,"Drama, Horror, Thriller",2024
+tt17279496,Civil War,"Action, Thriller",2024
+tt27403986,Juror #2,"Crime, Drama, Mystery",2024
