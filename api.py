@@ -41,12 +41,7 @@ def create_app(config):
     def get_movies():
         result = app.driver.find_movies()
         return result
-
-    @ver_bp.route("/movie/<title>/ratings")
-    def get_movie_ratings(title):
-        result = app.driver.find_movie_ratings(title)
-        return result
-
+    
     @ver_bp.route("/movie/<title>/reviews")
     def get_movie_reviews(title):
         result = app.driver.find_movie_reviews(title)
@@ -106,19 +101,7 @@ def create_app(config):
         print(f"data: {data}")
         result = app.driver.add_to_watchlist(username, data.get("title"))
         return result
-
-    @ver_bp.route("user/<username>/ratings")
-    def get_ratings_by_user(username):
-        result = app.driver.find_ratings_by_user(username)
-        return result
-
-    @ver_bp.route("user/<username>/ratings/new", methods=["POST"])
-    def set_rating(username):
-        data = request.get_json()
-        print(f"data: {data}")
-        result = app.driver.add_rating(username, data.get("title"), data.get("stars"))
-        return result
-    
+   
     @ver_bp.route("user/<username>/reviews")
     def get_reviews(username):
         result = app.driver.find_reviews_by_user(username)
@@ -145,6 +128,8 @@ def create_app(config):
         result = app.driver.connect_friends(data.get("username1"), data.get("username2"))
         return result
 
+    # Advanced queries
+
     @ver_bp.route("user/<username>/friends/network")
     def get_friends_network(username):
         result = app.driver.find_friends_network(username)
@@ -153,6 +138,17 @@ def create_app(config):
     @ver_bp.route("user/<username>/movies/recommendations")
     def get_movie_recommendations(username):
         result = app.driver.find_movie_recommendations(username)
+        return result
+
+    @ver_bp.route("user/<username>/movies/recommendations")
+    def get_best_average_reviewed():
+        result = app.driver.find_best_average_reviewed()
+        return result
+
+    # Get best averaged directors
+    @ver_bp.route("user/<username>/directors/recommendations")
+    def get_best_average_reviewed_directors():
+        result = app.driver.find_best_average_reviewed_directors()
         return result
 
     return app
