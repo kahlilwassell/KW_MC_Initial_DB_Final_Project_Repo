@@ -1,4 +1,5 @@
 import logging
+import re
 
 from neo4j import GraphDatabase, RoutingControl
 from neo4j.exceptions import DriverError, Neo4jError
@@ -235,8 +236,108 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    def find_friends_network(self, username):
-        pass
+    # Advance Queries   
+    def find_friends_network(self, username, degree):
+        with self.driver.session() as session:
+            result = self._create_and_return_friends_network(username, degree)
+            print(f"network: {result}")
+            return result
+
+    def _create_and_return_friends_network(self, username, degree):  
+        query = f'''
+            MATCH path=(u:user {{userName: $username}}) -[:isFriendsWith*1..{degree}]- (other:user) 
+            WHERE u <> other 
+            RETURN DISTINCT other AS person, length(path) AS degree 
+            ORDER BY degree, person.name
+            '''
+                   
+        try:
+            record = self.driver.execute_query(
+                query, username=username,
+                database_=self.database,
+                result_transformer_=lambda r: r.data("person", "degree")
+            )
+            return record
+        # Capture any errors along with the query and data for traceability
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
+
+    def find_hottest_movies(self, username):
+        with self.driver.session() as session:
+            recommendations = self._find_and_return_hottest_movies(username)
+        return recommendations
+
+    def _find_and_return_hottest_movies(self, username):
+        query = (
+            "MATCH (u:user {userName: $username })-[:isFriendsWith*1..10]-(friend:user) "
+            "WHERE u <> friend "
+            "MATCH (friend)-[:wantsToWatch]->(m:movie) "
+            "WITH m, COUNT(DISTINCT friend) AS hotness "
+            "ORDER BY hotness DESC "
+            "LIMIT 10 "
+            "RETURN m AS top_movie, hotness;"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("top_movie", "hotness")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
     def find_movie_recommendations(self, username):
+        with self.driver.session() as session:
+            recommendations = self._find_and_return_movie_recommendations(username)
+        return recommendations
+
+    def _find_and_return_movie_recommendations(self, username):
+        query = (
+            "MATCH path=(u:user {userName: $username}) -[:isFriendsWith*1..2]- (other:user) -[:wantsToWatch]- (m:movie) "
+            "WHERE u <> other "
+            "RETURN DISTINCT other as person, length(path) AS degree, m as recommendation "
+            "ORDER BY recommendation.name, person, degree;"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("recommendation", "person", "degree")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
+
+    def find_reviews_with_keyword(self, keyword):
+        with self.driver.session() as session:
+            reviews = self._find_and_return_reviews_with_keyword(keyword)
+        return reviews
+
+    def _find_and_return_reviews_with_keyword(self, keyword):
+        pattern = r"^\w+$"
+        if not re.match(pattern, keyword):
+            err_msg = "Keyword must be one word."
+            logging.error(err_msg)
+            return {"error": err_msg}
+            
+        query = (
+            "MATCH (m:movie)-[:hasReview]->(r:review) "
+            "WHERE toLower(r.text) CONTAINS toLower($keyword) "
+            "RETURN DISTINCT m.title AS movie, collect(r.text) AS review "
+            "ORDER BY movie;"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, keyword=keyword,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movie", "review")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
         pass
