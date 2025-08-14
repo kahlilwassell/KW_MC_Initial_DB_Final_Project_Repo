@@ -135,6 +135,7 @@ def create_app(config):
         result = app.driver.find_friends_network(username, degree)
         return result
 
+    # checked
     @ver_bp.route("user/<username>/movies/hottest")
     def get_hottest_movies(username):
         result = app.driver.find_hottest_movies(username)

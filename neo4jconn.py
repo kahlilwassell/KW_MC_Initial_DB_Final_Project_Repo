@@ -236,9 +236,7 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    # Advance Queries
-
-    
+    # Advance Queries   
     def find_friends_network(self, username, degree):
         with self.driver.session() as session:
             result = self._create_and_return_friends_network(username, degree)
