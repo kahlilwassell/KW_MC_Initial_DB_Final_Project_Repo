@@ -129,26 +129,27 @@ def create_app(config):
         return result
 
     # Advanced queries
-
-    @ver_bp.route("user/<username>/friends/network")
-    def get_friends_network(username):
-        result = app.driver.find_friends_network(username)
+    # checked
+    @ver_bp.route("user/<username>/friends/network/<degree>")
+    def get_friends_network(username, degree):
+        result = app.driver.find_friends_network(username, degree)
         return result
 
+    @ver_bp.route("user/<username>/movies/hottest")
+    def get_hottest_movies(username):
+        result = app.driver.find_hottest_movies(username)
+        return result
+
+    # checked
     @ver_bp.route("user/<username>/movies/recommendations")
     def get_movie_recommendations(username):
         result = app.driver.find_movie_recommendations(username)
         return result
 
-    @ver_bp.route("user/<username>/movies/recommendations")
-    def get_best_average_reviewed():
-        result = app.driver.find_best_average_reviewed()
-        return result
-
-    # Get best averaged directors
-    @ver_bp.route("user/<username>/directors/recommendations")
-    def get_best_average_reviewed_directors():
-        result = app.driver.find_best_average_reviewed_directors()
+    # checked
+    @ver_bp.route("reviews/<keyword>")
+    def get_reviews_with_keyword(keyword):
+        result = app.driver.find_reviews_with_keyword(keyword)
         return result
 
     return app
