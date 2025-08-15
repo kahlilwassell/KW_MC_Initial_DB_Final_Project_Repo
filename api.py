@@ -30,7 +30,7 @@ def create_app(config):
         if conn is not None:
             conn.close()
 
-    # Checked
+    # checked but untested
     @ver_bp.route("/movie/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
@@ -41,12 +41,12 @@ def create_app(config):
     def set_movie():
         data = request.get_json()
         movie_id = data.get("movieId")
-        title =  data.get("title")
-        year =  data.get("releaseYear")        
+        title = data.get("title")
+        year = data.get("releaseYear")
 
         if not all([movie_id, title, year]):
             return {"error": "The movie_id, title, and year must not be empty."}
-            
+
         result = app.driver.add_movie(movie_id, title, year)
         return result
 
@@ -63,49 +63,36 @@ def create_app(config):
         result = app.driver.add_genres_to_movie(title, genres)
         return result
 
-    # Checked
+    # checked but untested
     @ver_bp.route("/movies")
     def get_movies():
         result = app.driver.find_movies()
         return result
-    
+
     @ver_bp.route("/movie/<title>/reviews")
     def get_movie_reviews(title):
         result = app.driver.find_movie_reviews(title)
         return result
 
-    def _format_names(fullname):
-        names = fullname.strip().split(" ")
-        if len(names)>= 2:
-            first_name = names[0]
-            last_name = names[-1]
-        else:
-            first_name = names[0]
-            last_name = ""
-        return (first_name, last_name)
-
-    # Checked
+    # checked but untested
     @ver_bp.route("movies/director/<fullname>")
     def get_movies_by_director(fullname):
-        first_name, last_name = _format_names(fullname)
-        result = app.driver.find_movies_by_director(first_name, last_name)
+        result = app.driver.find_movies_by_director(fullname)
         return result
 
-    # Checked
+    # checked but untested
     @ver_bp.route("movies/actor/<fullname>")
     def get_movies_by_actor(fullname):
-        first_name, last_name = _format_names(fullname)
-        result = app.driver.find_movies_by_actor(first_name, last_name)
+        result = app.driver.find_movies_by_actor(fullname)
         return result
 
-    # Checked
+    # checked but untested
     @ver_bp.route("movies/genre/<genre>")
     def get_movies_by_genre(genre):
-        first_name, last_name = _format_names(genre)
         result = app.driver.find_movies_by_genre(genre)
         return result
-    
-    # Checked
+
+    # checked but untested
     @ver_bp.route("user/<username>")
     def get_user(username):
         result = app.driver.find_user(username)
@@ -117,7 +104,7 @@ def create_app(config):
         result = app.driver.find_watchlist(username)
         return result
 
-    # checked       
+    # checked
     @ver_bp.route("user/<username>/reviews")
     def get_reviews(username):
         result = app.driver.find_reviews_by_user(username)

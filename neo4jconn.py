@@ -21,16 +21,22 @@ class Neo4jDb:
 
     def _find_and_return_movie(self, title):
         query = (
-            "MATCH (m:Movie {title: $title}) "
-            "OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director) "
-            "OPTIONAL MATCH (m)<-[:FEATURED_IN]-(a:Actor)"
-            "RETURN m.title AS title, m.year AS year, d.firstName+' '+d.lastName AS director, collect(a.firstName+' '+a.lastName) AS actors"
+            """
+            MATCH (m:movie {title: $title})
+            OPTIONAL MATCH (m)<-[:directs]-(d:director)
+            OPTIONAL MATCH (m)<-[:actsIn]-(a:actor)
+            RETURN
+            m.title AS title,
+            m.releaseYear AS releaseYear,
+            collect(DISTINCT d.name) AS directors,
+            collect(DISTINCT a.name) AS actors
+            """
         )
         try:
             records = self.driver.execute_query(
                 query, title=title,
-                database_=self.database,routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.single().data("title","year","director","actors")
+                database_=self.database, routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.single().data("title", "releaseYear", "directors", "actors")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -87,7 +93,6 @@ class Neo4jDb:
             movie = self._add_and_return_genres_to_movie(title, genres)
         return movie
 
-
     def find_movies(self):
         with self.driver.session() as session:
             movies = self._find_and_return_movies()
@@ -95,18 +100,17 @@ class Neo4jDb:
 
     def _find_and_return_movies(self):
         query = (
-            "MATCH (m:Movie) "
-            "OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director) "
-            "OPTIONAL MATCH (m)<-[:FEATURED_IN]-(a:Actor) "
-            "WITH m, d, collect(a.firstName + ' ' + a.lastName) AS actors "
-            "RETURN collect({title:m.title, year:m.year,"
-            " director:COALESCE(d.firstName+' '+d.lastName,''),"
-            " actors:actors}) AS movies"
+            "MATCH (m:movie) "
+            "OPTIONAL MATCH (m)<-[:directs]-(d:director) "
+            "OPTIONAL MATCH (m)<-[:actsIn]-(a:actor) "
+            "WITH m, collect(DISTINCT a.name) AS actors, collect(DISTINCT d.name) AS directors "
+            "RETURN collect({title:m.title, releaseYear:m.releaseYear, "
+            " directors:directors, actors:actors}) AS movies"
         )
         try:
             records = self.driver.execute_query(
                 query,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movies")
             )
             return records
@@ -140,15 +144,15 @@ class Neo4jDb:
             movies = self._find_and_return_movies_by_director(first_name, last_name)
         return movies
 
-    def _find_and_return_movies_by_director(self, first_name, last_name):
+    def _find_and_return_movies_by_director(self, director_name):
         query = (
-            "MATCH (m:Movie)<-[:DIRECTED]-(d:Director {firstName:$first_name, lastName:$last_name}) "
-            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+            "MATCH (m:movie)<-[:directs]-(d:director {name:$director_name}) "
+            "RETURN collect({ title:m.title, releaseYear:m.releaseYear }) AS movies"
         )
         try:
             records = self.driver.execute_query(
-                query, first_name=first_name,last_name=last_name,
-                database_=self.database,routing=RoutingControl.READ,
+                query, director_name=director_name,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movies")
             )
             return records
@@ -182,15 +186,15 @@ class Neo4jDb:
             movies = self._find_and_return_movies_by_genre(genre)
         return movies
 
-    def _find_and_return_movies_by_genre(self, genre):
+    def _find_and_return_movies_by_genre(self, genre_name):
         query = (
-            "MATCH (m:Movie)<-[:HAS_GENRE]-(g:Genre {type:$genre}) "
-            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+            "MATCH (m:movie)-[:inGenre]->(g:genre {name:$genre_name}) "
+            "RETURN collect({ title:m.title, releaseYear:m.releaseYear }) AS movies"
         )
         try:
             records = self.driver.execute_query(
-                query, genre=genre,
-                database_=self.database,routing=RoutingControl.READ,
+                query, genre_name=genre_name,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movies")
             )
             return records
@@ -205,14 +209,14 @@ class Neo4jDb:
 
     def _find_and_return_user(self, username):
         query = (
-            "MATCH (u:User {userName:$username}) "
-            "RETURN u.firstName AS firstName, u.lastName AS lastName, u.userName AS userName, u.email AS email "
+            "MATCH (u:user {userName:$username}) "
+            "RETURN u.name AS name, u.userName AS userName, u.email AS email "
         )
         try:
             records = self.driver.execute_query(
                 query, username=username,
-                database_=self.database,routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.single(strict=True).data("firstName","lastName","userName","email")
+                database_=self.database, routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.single(strict=True).data("name","userName","email")
             )
             return records
         except (DriverError, Neo4jError) as exception:
