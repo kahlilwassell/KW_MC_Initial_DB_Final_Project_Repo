@@ -37,6 +37,57 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
+    def add_movie(self, movie_id, title, year):
+        with self.driver.session() as session:
+            movie = self._add_and_return_movie(movie_id, title, year)
+        return movie
+
+    def _add_and_return_movie(self, movie_id, title, year):
+        query = (
+            "MERGE (m:movie {movieId:$movieId, title:$title, releaseYear:$releaseYear}) "
+            "RETURN m AS movie"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, title=title, movieId=movie_id, releaseYear=year,
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.single().data("movie")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
+
+    def add_genres_to_movie(self, title, genres):
+        with self.driver.session() as session:
+            result = self._add_and_return_genres_to_movie(title, genres)
+        return result
+
+    def _add_and_return_genres_to_movie(self, title, genres):
+        query = (
+            "MATCH (m:movie {title:$title}) "
+            "UNWIND $genres AS genreName "
+            "MATCH (g:genre {name:genreName}) "
+            "MERGE (m) -[r:inGenre]-> (g) "
+            "RETURN m AS movie, collect(g) AS genres"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, title=title, genres=genres, 
+                database_=self.database,routing=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movie", "genres")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
+
+    def add_genres_to_movie(self, title, genres):
+        with self.driver.session() as session:
+            movie = self._add_and_return_genres_to_movie(title, genres)
+        return movie
+
+
     def find_movies(self):
         with self.driver.session() as session:
             movies = self._find_and_return_movies()
@@ -169,7 +220,25 @@ class Neo4jDb:
             raise
 
     def find_watchlist(self, username):
-        pass
+        with self.driver.session() as session:
+            watchlist = self._find_and_return_watchlist(username)
+        return watchlist
+
+    def _find_and_return_watchlist(self, username):
+        query = (
+            "MATCH (u:user {userName: $username }) -[r:wantsToWatch]-> (m:movie) "
+            "RETURN m AS movie, r.addedOn as added_on"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database, routing_=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movie","added_on")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
     def add_watchlist(self, username):
         pass
@@ -178,7 +247,26 @@ class Neo4jDb:
         pass
 
     def find_reviews_by_user(self, username):
-        pass
+        with self.driver.session() as session:
+            reviews= self._find_and_return_reviews_by_user(username)
+        return reviews
+
+    def _find_and_return_reviews_by_user(self, username):
+        query = (
+            "MATCH path=(u:user {userName: $username}) -[r:gaveReview]-> (review:review) <-[:hasReview]- (m:movie) "
+            "ORDER BY review.reviewId "
+            "RETURN m as movie, review, r.reviewDate as review_date"
+        )
+        try:
+            records = self.driver.execute_query(
+                query, username=username,
+                database_=self.database, routing_=RoutingControl.READ,
+                result_transformer_=lambda r: r.data("movie","review","review_date")
+            )
+            return records
+        except (DriverError, Neo4jError) as exception:
+            logging.error("%s raised an error: \n%s", query, exception)
+            raise
 
     def add_reviews(self, username):
         pass
@@ -258,7 +346,6 @@ class Neo4jDb:
                 result_transformer_=lambda r: r.data("person", "degree")
             )
             return record
-        # Capture any errors along with the query and data for traceability
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
