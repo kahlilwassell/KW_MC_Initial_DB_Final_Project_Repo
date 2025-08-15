@@ -36,6 +36,33 @@ def create_app(config):
         result = app.driver.find_movie(title)
         return result
 
+    # checked
+    @ver_bp.route("/movie/new", methods=["POST"])
+    def set_movie():
+        data = request.get_json()
+        movie_id = data.get("movieId")
+        title =  data.get("title")
+        year =  data.get("releaseYear")        
+
+        if not all([movie_id, title, year]):
+            return {"error": "The movie_id, title, and year must not be empty."}
+            
+        result = app.driver.add_movie(movie_id, title, year)
+        return result
+
+    # checked
+    @ver_bp.route("/movie/genres/new", methods=["POST"])
+    def set_movie_genres():
+        data = request.get_json()
+        title = data.get("title")
+        genres = data.get("genres", [])
+
+        if len(genres) == 0:
+            return {"error": "Include more than one genre."}
+
+        result = app.driver.add_genres_to_movie(title, genres)
+        return result
+
     # Checked
     @ver_bp.route("/movies")
     def get_movies():
@@ -79,39 +106,21 @@ def create_app(config):
         return result
     
     # Checked
-    @ver_bp.route("/user/<username>")
+    @ver_bp.route("user/<username>")
     def get_user(username):
         result = app.driver.find_user(username)
         return result
 
+    # checked
     @ver_bp.route("user/<username>/watchlist")
     def get_watchlist(username):
         result = app.driver.find_watchlist(username)
         return result
 
-    @ver_bp.route("user/<username>/watchlist/new", methods=["POST"])
-    def set_watchlist(username):
-        data = request.get_json()
-        result = app.driver.add_watchlist(data.get("username"))
-        return result
-
-    @ver_bp.route("user/<username>/watchlist", methods=["POST"])
-    def set_to_watchlist(username):
-        data = request.get_json()
-        print(f"data: {data}")
-        result = app.driver.add_to_watchlist(username, data.get("title"))
-        return result
-   
+    # checked       
     @ver_bp.route("user/<username>/reviews")
     def get_reviews(username):
         result = app.driver.find_reviews_by_user(username)
-        return result
-
-    @ver_bp.route("user/<username>/review/new", methods=["POST"])
-    def set_review(username):
-        data = request.get_json()
-        print(f"data: {data}")
-        result = app.driver.add_review(username, data.get("title"), data.get("content"))
         return result
 
     # checked
