@@ -1,6 +1,7 @@
 from flask import Flask, g, Blueprint, request, jsonify
 import neo4jconn
 import configparser
+from flask import render_template
 
 
 def connect_db(config):
@@ -75,43 +76,43 @@ def create_app(config):
         return result
 
     # checked but untested
-    @ver_bp.route("movies/director/<fullname>")
+    @ver_bp.route("/movies/director/<fullname>")
     def get_movies_by_director(fullname):
         result = app.driver.find_movies_by_director(fullname)
         return result
 
     # checked but untested
-    @ver_bp.route("movies/actor/<fullname>")
+    @ver_bp.route("/movies/actor/<fullname>")
     def get_movies_by_actor(fullname):
         result = app.driver.find_movies_by_actor(fullname)
         return result
 
     # checked but untested
-    @ver_bp.route("movies/genre/<genre>")
+    @ver_bp.route("/movies/genre/<genre>")
     def get_movies_by_genre(genre):
         result = app.driver.find_movies_by_genre(genre)
         return result
 
     # checked but untested
-    @ver_bp.route("user/<username>")
+    @ver_bp.route("/user/<username>")
     def get_user(username):
         result = app.driver.find_user(username)
         return result
 
     # checked
-    @ver_bp.route("user/<username>/watchlist")
+    @ver_bp.route("/user/<username>/watchlist")
     def get_watchlist(username):
         result = app.driver.find_watchlist(username)
         return result
 
     # checked
-    @ver_bp.route("user/<username>/reviews")
+    @ver_bp.route("/user/<username>/reviews")
     def get_reviews(username):
         result = app.driver.find_reviews_by_user(username)
         return result
 
     # checked
-    @ver_bp.route("user/<username>/friends")
+    @ver_bp.route("/user/<username>/friends")
     def get_friends(username):
         result = app.driver.find_friends(username)
         return result
@@ -132,22 +133,45 @@ def create_app(config):
         return result
 
     # checked
-    @ver_bp.route("user/<username>/movies/hottest")
+    @ver_bp.route("/user/<username>/movies/hottest")
     def get_hottest_movies(username):
         result = app.driver.find_hottest_movies(username)
         return result
 
     # checked
-    @ver_bp.route("user/<username>/movies/recommendations")
+    @ver_bp.route("/user/<username>/movies/recommendations")
     def get_movie_recommendations(username):
         result = app.driver.find_movie_recommendations(username)
         return result
 
     # checked
-    @ver_bp.route("reviews/<keyword>")
+    @ver_bp.route("/reviews/<keyword>")
     def get_reviews_with_keyword(keyword):
         result = app.driver.find_reviews_with_keyword(keyword)
         return result
+
+    @ver_bp.route("/ui")
+    def ui_console():
+        return render_template(
+            "query_console.html",
+            base_url="/api/v1",
+            endpoints=[
+                "GET /movie/:title",
+                "GET /movies",
+                "GET /movie/:title/reviews",
+                "GET /movies/director/:fullname",
+                "GET /movies/actor/:fullname",
+                "GET /movies/genre/:genre",
+                "GET /user/:username",
+                "GET /user/:username/watchlist",
+                "GET /user/:username/reviews",
+                "GET /user/:username/friends",
+                "GET /user/:username/friends/network/:degree",
+                "GET /user/:username/movies/hottest",
+                "GET /user/:username/movies/recommendations",
+                "GET /reviews/:keyword",
+            ],
+        )
 
     return app
 

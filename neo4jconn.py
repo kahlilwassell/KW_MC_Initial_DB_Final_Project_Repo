@@ -342,7 +342,7 @@ class Neo4jDb:
             RETURN DISTINCT other AS person, length(path) AS degree 
             ORDER BY degree, person.name
             '''
-                   
+
         try:
             record = self.driver.execute_query(
                 query, username=username,
@@ -414,7 +414,6 @@ class Neo4jDb:
             err_msg = "Keyword must be one word."
             logging.error(err_msg)
             return {"error": err_msg}
-            
         query = (
             "MATCH (m:movie)-[:hasReview]->(r:review) "
             "WHERE toLower(r.text) CONTAINS toLower($keyword) "

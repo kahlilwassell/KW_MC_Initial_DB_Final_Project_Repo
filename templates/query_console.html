@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Movie Graph Query Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+    :root {
+        --bg: #0f172a;
+        --card: #111827;
+        --muted: #94a3b8;
+        --text: #e5e7eb;
+        --accent: #22d3ee;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    h1 {
+        margin: 0 0 12px;
+    }
+
+    .card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 12px 0;
+    }
+
+    label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin: 10px 0 6px;
+    }
+
+    select,
+    input,
+    button {
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0b1220;
+        color: var(--text);
+    }
+
+    select,
+    input {
+        padding: 10px 12px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+    }
+
+    button {
+        padding: 10px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(120deg, #22d3ee, #06b6d4);
+        border: none;
+        color: #001018;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #0b1220;
+        border-radius: 12px;
+        padding: 12px;
+        overflow: auto;
+    }
+
+    .muted {
+        color: var(--muted);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 8px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: left;
+    }
+
+    th {
+        color: #a5b4fc;
+    }
+    </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <h1>Movie Graph Query Console</h1>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>API Base URL</label>
+          <input id="baseUrl" value="{{ base_url }}">
+        </div>
+        <div>
+          <label>Choose a query</label>
+          <select id="endpoint">
+            {% for e in endpoints %}
+              <option value="{{ e }}">{{ e }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="align-self:end">
+          <button id="runBtn">Run</button>
+        </div>
+      </div>
+      <div id="paramForm"></div>
+    </div>
+
+    <div class="card">
+      <strong>Response</strong>
+      <div id="tableWrap" style="display:none; margin-top:8px"></div>
+      <pre id="out" style="margin-top:8px"></pre>
+    </div>
+  </div>
+
+<script>
+const endpointInputMap = {
+  "GET /movie/:title": [{key:"title", label:"Title"}],
+  "GET /movies": [],
+  "GET /movie/:title/reviews": [{key:"title", label:"Title"}],
+  "GET /movies/director/:fullname": [{key:"fullname", label:"Director full name"}],
+  "GET /movies/actor/:fullname": [{key:"fullname", label:"Actor full name"}],
+  "GET /movies/genre/:genre": [{key:"genre", label:"Genre name"}],
+  "GET /user/:username": [{key:"username", label:"Username"}],
+  "GET /user/:username/watchlist": [{key:"username", label:"Username"}],
+  "GET /user/:username/reviews": [{key:"username", label:"Username"}],
+  "GET /user/:username/friends": [{key:"username", label:"Username"}],
+  "GET /user/:username/friends/network/:degree": [
+    {key:"username", label:"Username"}, {key:"degree", label:"Degree (1-5)"}
+  ],
+  "GET /user/:username/movies/hottest": [{key:"username", label:"Username"}],
+  "GET /user/:username/movies/recommendations": [{key:"username", label:"Username"}],
+  "GET /reviews/:keyword": [{key:"keyword", label:"Keyword"}],
+};
+
+const endpointPath = {
+  "GET /movie/:title": p => `/movie/${encodeURIComponent(p.title)}`,
+  "GET /movies": () => `/movies`,
+  "GET /movie/:title/reviews": p => `/movie/${encodeURIComponent(p.title)}/reviews`,
+  "GET /movies/director/:fullname": p => `/movies/director/${encodeURIComponent(p.fullname)}`,
+  "GET /movies/actor/:fullname": p => `/movies/actor/${encodeURIComponent(p.fullname)}`,
+  "GET /movies/genre/:genre": p => `/movies/genre/${encodeURIComponent(p.genre)}`,
+  "GET /user/:username": p => `/user/${encodeURIComponent(p.username)}`,
+  "GET /user/:username/watchlist": p => `/user/${encodeURIComponent(p.username)}/watchlist`,
+  "GET /user/:username/reviews": p => `/user/${encodeURIComponent(p.username)}/reviews`,
+  "GET /user/:username/friends": p => `/user/${encodeURIComponent(p.username)}/friends`,
+  "GET /user/:username/friends/network/:degree": p => `/user/${encodeURIComponent(p.username)}/friends/network/${encodeURIComponent(p.degree)}`,
+  "GET /user/:username/movies/hottest": p => `/user/${encodeURIComponent(p.username)}/movies/hottest`,
+  "GET /user/:username/movies/recommendations": p => `/user/${encodeURIComponent(p.username)}/movies/recommendations`,
+  "GET /reviews/:keyword": p => `/reviews/${encodeURIComponent(p.keyword)}`,
+};
+
+const endpoint = document.getElementById('endpoint');
+const form = document.getElementById('paramForm');
+const runBtn = document.getElementById('runBtn');
+const out = document.getElementById('out');
+const tableWrap = document.getElementById('tableWrap');
+const baseUrl = document.getElementById('baseUrl');
+
+function renderForm() {
+  form.innerHTML = '';
+  const spec = endpointInputMap[endpoint.value] || [];
+  spec.forEach(f => {
+    const div = document.createElement('div');
+    div.style.marginTop = '8px';
+    const label = document.createElement('label');
+    label.textContent = f.label;
+    const input = document.createElement('input');
+    input.id = `f_${f.key}`;
+    input.type = 'text';
+    div.appendChild(label); div.appendChild(input); form.appendChild(div);
+  });
+}
+endpoint.addEventListener('change', renderForm);
+renderForm();
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  out.textContent=''; tableWrap.style.display='none'; tableWrap.innerHTML='';
+  try {
+    const spec = endpointInputMap[endpoint.value] || [];
+    const params = Object.fromEntries(spec.map(f=>[f.key, document.getElementById(`f_${f.key}`).value.trim()]));
+    const pathFn = endpointPath[endpoint.value];
+    const url = baseUrl.value.replace(/\/$/,'') + pathFn(params);
+    const res = await fetch(url);
+    const data = await res.json();
+    renderData(data);
+  } catch (e) {
+    out.textContent = 'Error: ' + (e?.message || e);
+  }
+});
+
+function renderData(data){
+  const arr = Array.isArray(data) ? data : (data && data.results) || null;
+  if (Array.isArray(arr) && arr.length && typeof arr[0] === 'object'){
+    const keys = Array.from(arr.reduce((s,o)=>{Object.keys(o).forEach(k=>s.add(k));return s;}, new Set()));
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const trh = document.createElement('tr');
+    keys.forEach(k=>{const th=document.createElement('th');th.textContent=k;trh.appendChild(th)});
+    thead.appendChild(trh); table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    arr.forEach(row=>{
+      const tr=document.createElement('tr');
+      keys.forEach(k=>{const td=document.createElement('td');
+        let v=row[k]; if (typeof v === 'object') v = JSON.stringify(v);
+        td.textContent = v !== undefined ? v : ''; tr.appendChild(td);
+      }); tbody.appendChild(tr);
+    }); table.appendChild(tbody);
+    tableWrap.style.display='block'; tableWrap.appendChild(table);
+    out.textContent = JSON.stringify(arr, null, 2);
+  } else {
+    out.textContent = JSON.stringify(data, null, 2);
+  }
+}
+</script>
+</body>
+</html>
