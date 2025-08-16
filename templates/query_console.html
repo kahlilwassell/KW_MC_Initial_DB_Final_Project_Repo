@@ -2,30 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Movie Graph – Query Console</title>
+  <title>Movie Graph Query Console</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --accent:#22d3ee; }
-    html,body{height:100%} body{margin:0;background:#0f172a;color:var(--text);
-    font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    h1{margin:0 0 12px}
-    .card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin:12px 0}
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    select,input,button{border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0b1220;color:var(--text)}
-    select,input{padding:10px 12px;font-size:14px;width:100%}
-    .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    button{padding:10px 14px;font-weight:600;cursor:pointer;background:linear-gradient(120deg,#22d3ee,#06b6d4);border:none;color:#001018}
-    pre{white-space:pre-wrap;word-break:break-word;background:#0b1220;border-radius:12px;padding:12px;overflow:auto}
-    .muted{color:var(--muted)}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
-    th{color:#a5b4fc}
-  </style>
+    <style>
+    :root {
+        --bg: #0f172a;
+        --card: #111827;
+        --muted: #94a3b8;
+        --text: #e5e7eb;
+        --accent: #22d3ee;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    h1 {
+        margin: 0 0 12px;
+    }
+
+    .card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 12px 0;
+    }
+
+    label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin: 10px 0 6px;
+    }
+
+    select,
+    input,
+    button {
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0b1220;
+        color: var(--text);
+    }
+
+    select,
+    input {
+        padding: 10px 12px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+    }
+
+    button {
+        padding: 10px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(120deg, #22d3ee, #06b6d4);
+        border: none;
+        color: #001018;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #0b1220;
+        border-radius: 12px;
+        padding: 12px;
+        overflow: auto;
+    }
+
+    .muted {
+        color: var(--muted);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 8px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: left;
+    }
+
+    th {
+        color: #a5b4fc;
+    }
+    </style>
+
 </head>
 <body>
   <div class="wrap">
-    <h1>🎬 Movie Graph – Query Console</h1>
+    <h1>Movie Graph Query Console</h1>
     <div class="card">
       <div class="row">
         <div>
