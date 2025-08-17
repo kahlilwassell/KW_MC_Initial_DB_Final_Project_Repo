@@ -88,11 +88,6 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    def add_genres_to_movie(self, title, genres):
-        with self.driver.session() as session:
-            movie = self._add_and_return_genres_to_movie(title, genres)
-        return movie
-
     def find_movies(self):
         with self.driver.session() as session:
             movies = self._find_and_return_movies()
@@ -120,18 +115,18 @@ class Neo4jDb:
 
     def find_movie_reviews(self, title):
         with self.driver.session() as session:
-            reviews = self._find_and_return_movies_reviews(title)
+            reviews = self._find_and_return_movie_reviews(title)
         return reviews
 
     def _find_and_return_movie_reviews(self, title):
         query = (
-            "MATCH (m:Movie $title) -[:HAS_REVIEW]->(r:Review)<-[:GAVE_REVIEW]- (u:User)"
-            "RETURN collect({ review:r.text, rating:r.stars user:u.username }) AS reviews"
+            "MATCH (m:movie {title:$title})-[:hasReview]->(r:review)<-[:gaveReview]-(u:user) "
+            "RETURN collect({ review:r.text, rating:r.rating, user:u.userName }) AS reviews"
         )
         try:
             records = self.driver.execute_query(
-                query, first_name=first_name,last_name=last_name,
-                database_=self.database,routing=RoutingControl.READ,
+                query, title=title,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("reviews")
             )
             return records
@@ -139,9 +134,9 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    def find_movies_by_director(self, first_name, last_name):
+    def find_movies_by_director(self, director_name):
         with self.driver.session() as session:
-            movies = self._find_and_return_movies_by_director(first_name, last_name)
+            movies = self._find_and_return_movies_by_director(director_name)
         return movies
 
     def _find_and_return_movies_by_director(self, director_name):
@@ -160,19 +155,19 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    def find_movies_by_actor(self, first_name, last_name):
+    def find_movies_by_actor(self, actor_name):
         with self.driver.session() as session:
-            movies = self._find_and_return_movies_by_actor(first_name, last_name)
+            movies = self._find_and_return_movies_by_actor(actor_name)
         return movies
 
-    def _find_and_return_movies_by_actor(self, first_name, last_name):
+    def _find_and_return_movies_by_actor(self, actor_name):
         query = (
-            "MATCH (m:Movie)<-[:FEATURED_IN]-(a:Actor {firstName:$first_name, lastName:$last_name}) "
-            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+            "MATCH (m:movie)<-[:actsIn]-(a:actor {name:$actor_name}) "
+            "RETURN collect({ title:m.title, year:m.releaseYear}) AS movies"
         )
         try:
             records = self.driver.execute_query(
-                query, first_name=first_name,last_name=last_name,
+                query, actor_name=actor_name,
                 database_=self.database,routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movies")
             )
@@ -216,7 +211,7 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, username=username,
                 database_=self.database, routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.single(strict=True).data("name","userName","email")
+                result_transformer_=lambda r: r.single(strict=True).data("name", "userName", "email")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -237,7 +232,7 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, username=username,
                 database_=self.database, routing_=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("movie","added_on")
+                result_transformer_=lambda r: r.data("movie", "added_on")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -283,14 +278,14 @@ class Neo4jDb:
 
     def _find_and_return_friends(self, username):
         query = (
-            "MATCH (:User {userName:$username})-[:FRIENDS_WITH]->(u:User) "
-            "RETURN u.firstName AS firstName, u.lastName AS lastName, u.email AS email"
+            "MATCH (:user {userName:$username})-[:isFriendsWith]->(u:user) "
+            "RETURN u.name AS name, u.email AS email"
         )
         try:
             records = self.driver.execute_query(
                 query, username=username,
                 database_=self.database, routing_=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("firstName","lastName","email")
+                result_transformer_=lambda r: r.data("name", "email")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -312,9 +307,9 @@ class Neo4jDb:
         query = (
             "MATCH (u1:User { userName: $username1}) "
             "MATCH (u2:User { userName: $username2}) "
-            "MERGE (u1)-[:FRIENDS_WITH]->(u2) "
-            "MERGE (u2)-[:FRIENDS_WITH]->(u1) "
-            "RETURN u1.firstName AS user1FirstName, u1.lastName AS user1LastName, u2.firstName AS user2FirstName, u2.lastName AS user2LastName"
+            "MERGE (u1)-[:isFriendsWith]->(u2) "
+            "MERGE (u2)-[:isFriendsWith]->(u1) "
+            "RETURN u1.name AS user1name, u2.name AS user2name"
         )
         try:
             record = self.driver.execute_query(
@@ -335,11 +330,11 @@ class Neo4jDb:
             print(f"network: {result}")
             return result
 
-    def _create_and_return_friends_network(self, username, degree):  
+    def _create_and_return_friends_network(self, username, degree): 
         query = f'''
-            MATCH path=(u:user {{userName: $username}}) -[:isFriendsWith*1..{degree}]- (other:user) 
-            WHERE u <> other 
-            RETURN DISTINCT other AS person, length(path) AS degree 
+            MATCH path=(u:user {{userName: $username}}) -[:isFriendsWith*1..{degree}]- (other:user)
+            WHERE u <> other
+            RETURN DISTINCT other AS person, length(path) AS degree
             ORDER BY degree, person.name
             '''
 
