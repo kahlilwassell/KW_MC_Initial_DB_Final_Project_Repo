@@ -163,7 +163,7 @@ class Neo4jDb:
     def _find_and_return_movies_by_actor(self, actor_name):
         query = (
             "MATCH (m:movie)<-[:actsIn]-(a:actor {name:$actor_name}) "
-            "RETURN collect({ title:m.title, year:m.year}) AS movies"
+            "RETURN collect({ title:m.title, year:m.releaseYear}) AS movies"
         )
         try:
             records = self.driver.execute_query(
@@ -232,7 +232,7 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, username=username,
                 database_=self.database, routing_=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("movie","added_on")
+                result_transformer_=lambda r: r.data("movie", "added_on")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -278,7 +278,7 @@ class Neo4jDb:
 
     def _find_and_return_friends(self, username):
         query = (
-            "MATCH (:User {userName:$username})-[:isFriendsWith]->(u:User) "
+            "MATCH (:user {userName:$username})-[:isFriendsWith]->(u:user) "
             "RETURN u.name AS name, u.email AS email"
         )
         try:
