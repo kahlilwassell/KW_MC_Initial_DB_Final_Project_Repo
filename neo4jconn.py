@@ -15,7 +15,7 @@ class Neo4jDb:
         self.driver.close()
 
     def find_movie(self, title):
-        with self.driver.session() as session:
+        with self.driver.session():
             movies = self._find_and_return_movie(title)
         return movies
 
@@ -44,7 +44,7 @@ class Neo4jDb:
             raise
 
     def add_movie(self, movie_id, title, year):
-        with self.driver.session() as session:
+        with self.driver.session():
             movie = self._add_and_return_movie(movie_id, title, year)
         return movie
 
@@ -56,7 +56,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, title=title, movieId=movie_id, releaseYear=year,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.single().data("movie")
             )
             return records
@@ -65,7 +65,7 @@ class Neo4jDb:
             raise
 
     def add_genres_to_movie(self, title, genres):
-        with self.driver.session() as session:
+        with self.driver.session():
             result = self._add_and_return_genres_to_movie(title, genres)
         return result
 
@@ -89,7 +89,7 @@ class Neo4jDb:
             raise
 
     def find_movies(self):
-        with self.driver.session() as session:
+        with self.driver.session():
             movies = self._find_and_return_movies()
         return movies
 
@@ -114,7 +114,7 @@ class Neo4jDb:
             raise
 
     def find_movie_reviews(self, title):
-        with self.driver.session() as session:
+        with self.driver.session():
             reviews = self._find_and_return_movie_reviews(title)
         return reviews
 
@@ -135,7 +135,7 @@ class Neo4jDb:
             raise
 
     def find_movies_by_director(self, director_name):
-        with self.driver.session() as session:
+        with self.driver.session():
             movies = self._find_and_return_movies_by_director(director_name)
         return movies
 
@@ -156,7 +156,7 @@ class Neo4jDb:
             raise
 
     def find_movies_by_actor(self, actor_name):
-        with self.driver.session() as session:
+        with self.driver.session():
             movies = self._find_and_return_movies_by_actor(actor_name)
         return movies
 
@@ -168,7 +168,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, actor_name=actor_name,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movies")
             )
             return records
@@ -177,7 +177,7 @@ class Neo4jDb:
             raise
 
     def find_movies_by_genre(self, genre):
-        with self.driver.session() as session:
+        with self.driver.session():
             movies = self._find_and_return_movies_by_genre(genre)
         return movies
 
@@ -198,7 +198,7 @@ class Neo4jDb:
             raise
 
     def find_user(self, username):
-        with self.driver.session() as session:
+        with self.driver.session():
             user = self._find_and_return_user(username)
         return user
 
@@ -246,8 +246,8 @@ class Neo4jDb:
         pass
 
     def find_reviews_by_user(self, username):
-        with self.driver.session() as session:
-            reviews= self._find_and_return_reviews_by_user(username)
+        with self.driver.session():
+            reviews = self._find_and_return_reviews_by_user(username)
         return reviews
 
     def _find_and_return_reviews_by_user(self, username):
@@ -294,7 +294,7 @@ class Neo4jDb:
 
     def connect_friends(self, username1, username2):
         print(f"u1: {username1} u2: {username2}")
-        with self.driver.session() as session:
+        with self.driver.session():
             # Write transactions allow the driver to handle retries and
             # transient errors
             result = self._create_and_return_friendship(
@@ -305,8 +305,8 @@ class Neo4jDb:
     def _create_and_return_friendship(self, username1, username2):
         print(f"Inside connection fn -> u1:{username1}, u2:{username2}")
         query = (
-            "MATCH (u1:User { userName: $username1}) "
-            "MATCH (u2:User { userName: $username2}) "
+            "MATCH (u1:user { userName: $username1}) "
+            "MATCH (u2:user { userName: $username2}) "
             "MERGE (u1)-[:isFriendsWith]->(u2) "
             "MERGE (u2)-[:isFriendsWith]->(u1) "
             "RETURN u1.name AS user1name, u2.name AS user2name"
@@ -315,7 +315,7 @@ class Neo4jDb:
             record = self.driver.execute_query(
                 query, username1=username1, username2=username2,
                 database_=self.database,
-                result_transformer_=lambda r: r.single(strict=True).data("user1FirstName", "user1LastName", "user2FirstName", "user2LastName")
+                result_transformer_=lambda r: r.single(strict=True).data("user1name", "user2name")
             )
             return record
         # Capture any errors along with the query and data for traceability
@@ -323,21 +323,20 @@ class Neo4jDb:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
 
-    # Advance Queries   
+    # Advance Queries
     def find_friends_network(self, username, degree):
-        with self.driver.session() as session:
+        with self.driver.session():
             result = self._create_and_return_friends_network(username, degree)
             print(f"network: {result}")
             return result
 
-    def _create_and_return_friends_network(self, username, degree): 
+    def _create_and_return_friends_network(self, username, degree):
         query = f'''
             MATCH path=(u:user {{userName: $username}}) -[:isFriendsWith*1..{degree}]- (other:user)
             WHERE u <> other
             RETURN DISTINCT other AS person, length(path) AS degree
             ORDER BY degree, person.name
             '''
-
         try:
             record = self.driver.execute_query(
                 query, username=username,
@@ -350,7 +349,7 @@ class Neo4jDb:
             raise
 
     def find_hottest_movies(self, username):
-        with self.driver.session() as session:
+        with self.driver.session():
             recommendations = self._find_and_return_hottest_movies(username)
         return recommendations
 
@@ -367,7 +366,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, username=username,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("top_movie", "hotness")
             )
             return records
@@ -376,7 +375,7 @@ class Neo4jDb:
             raise
 
     def find_movie_recommendations(self, username):
-        with self.driver.session() as session:
+        with self.driver.session():
             recommendations = self._find_and_return_movie_recommendations(username)
         return recommendations
 
@@ -390,7 +389,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, username=username,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("recommendation", "person", "degree")
             )
             return records
@@ -399,7 +398,7 @@ class Neo4jDb:
             raise
 
     def find_reviews_with_keyword(self, keyword):
-        with self.driver.session() as session:
+        with self.driver.session():
             reviews = self._find_and_return_reviews_with_keyword(keyword)
         return reviews
 
@@ -418,7 +417,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, keyword=keyword,
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movie", "review")
             )
             return records

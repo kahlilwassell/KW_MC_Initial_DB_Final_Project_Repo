@@ -127,7 +127,7 @@ def create_app(config):
 
     # Advanced queries
     # checked
-    @ver_bp.route("user/<username>/friends/network/<degree>")
+    @ver_bp.route("/user/<username>/friends/network/<degree>")
     def get_friends_network(username, degree):
         result = app.driver.find_friends_network(username, degree)
         return result
@@ -170,6 +170,9 @@ def create_app(config):
                 "GET /user/:username/movies/hottest",
                 "GET /user/:username/movies/recommendations",
                 "GET /reviews/:keyword",
+                "POST /movie/new",
+                "POST /movie/genres/new",
+                "POST /friends/new",
             ],
         )
 
