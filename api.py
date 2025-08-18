@@ -31,13 +31,17 @@ def create_app(config):
         if conn is not None:
             conn.close()
 
-    # checked but untested
+    @ver_bp.route("/movie/")
+    def invalid_path(): # Ideally would want to implement form validation, but simple hack to sidestep frontend work .
+        return { "message": "Invalid path. You probably meant to hit the /movie/title. If you are accessing through the GUI please input a title."}
+
+    # checked and tested
     @ver_bp.route("/movie/<title>")
     def get_movie(title):
         result = app.driver.find_movie(title)
         return result
 
-    # checked
+    # checked and tested
     @ver_bp.route("/movie/new", methods=["POST"])
     def set_movie():
         data = request.get_json()
@@ -46,12 +50,12 @@ def create_app(config):
         year = data.get("releaseYear")
 
         if not all([movie_id, title, year]):
-            return {"error": "The movie_id, title, and year must not be empty."}
+            return {"message": "The movie_id, title, and year must not be empty."}
 
         result = app.driver.add_movie(movie_id, title, year)
         return result
 
-    # checked
+    # checked and tested
     @ver_bp.route("/movie/genres/new", methods=["POST"])
     def set_movie_genres():
         data = request.get_json()
@@ -59,12 +63,12 @@ def create_app(config):
         genres = data.get("genres", [])
 
         if len(genres) == 0:
-            return {"error": "Include more than one genre."}
+            return {"message": "Include more than one genre."}
 
         result = app.driver.add_genres_to_movie(title, genres)
         return result
 
-    # checked but untested
+    # checked and tested
     @ver_bp.route("/movies")
     def get_movies():
         result = app.driver.find_movies()
@@ -75,43 +79,43 @@ def create_app(config):
         result = app.driver.find_movie_reviews(title)
         return result
 
-    # checked but untested
+    # checked and tested
     @ver_bp.route("/movies/director/<fullname>")
     def get_movies_by_director(fullname):
         result = app.driver.find_movies_by_director(fullname)
         return result
 
-    # checked but untested
+    # checked and tested
     @ver_bp.route("/movies/actor/<fullname>")
     def get_movies_by_actor(fullname):
         result = app.driver.find_movies_by_actor(fullname)
         return result
 
-    # checked but untested
+    # checked and tested
     @ver_bp.route("/movies/genre/<genre>")
     def get_movies_by_genre(genre):
         result = app.driver.find_movies_by_genre(genre)
         return result
 
-    # checked but untested
+    # checked and tested
     @ver_bp.route("/user/<username>")
     def get_user(username):
         result = app.driver.find_user(username)
         return result
 
-    # checked
+    # checked and tested
     @ver_bp.route("/user/<username>/watchlist")
     def get_watchlist(username):
         result = app.driver.find_watchlist(username)
         return result
 
-    # checked
+    # checked and tested
     @ver_bp.route("/user/<username>/reviews")
     def get_reviews(username):
         result = app.driver.find_reviews_by_user(username)
         return result
 
-    # checked
+    # checked and tested
     @ver_bp.route("/user/<username>/friends")
     def get_friends(username):
         result = app.driver.find_friends(username)
@@ -121,8 +125,11 @@ def create_app(config):
     @ver_bp.route("/friends/new", methods=["POST"])
     def set_friends():
         data = request.get_json()
-        print(f"data: {data}")
-        result = app.driver.connect_friends(data.get("username1"), data.get("username2"))
+        u1 = data.get("username1")
+        u2 = data.get("username2")
+        if not all([u1, u2]):
+            return {"message": "Both username1 and username2 is required to create a friendship"}
+        result = app.driver.connect_friends(u1, u2)
         return result
 
     # Advanced queries
