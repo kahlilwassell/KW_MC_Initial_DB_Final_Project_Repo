@@ -2,7 +2,7 @@ import logging
 import re
 
 from neo4j import GraphDatabase, RoutingControl
-from neo4j.exceptions import DriverError, Neo4jError
+from neo4j.exceptions import DriverError, Neo4jError, ResultNotSingleError, GqlError
 
 
 class Neo4jDb:
@@ -16,8 +16,8 @@ class Neo4jDb:
 
     def find_movie(self, title):
         with self.driver.session():
-            movies = self._find_and_return_movie(title)
-        return movies
+            movie = self._find_and_return_movie(title)
+        return movie
 
     def _find_and_return_movie(self, title):
         query = (
@@ -36,9 +36,12 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, title=title,
                 database_=self.database, routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.single().data("title", "releaseYear", "directors", "actors")
+                result_transformer_=lambda r: r.single(strict=True).data("title", "releaseYear", "directors", "actors")
             )
             return records
+        except (ResultNotSingleError) as exception:
+            print(exception)
+            return { "message": "No such movie title exist."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -57,9 +60,13 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, title=title, movieId=movie_id, releaseYear=year,
                 database_=self.database, routing=RoutingControl.READ,
-                result_transformer_=lambda r: r.single().data("movie")
+                result_transformer_=lambda r: r.single(strict=True).data("movie")
             )
             return records
+        except (GqlError) as exception:
+            return { "message": f"{exception.message}" }
+        except (ResultNotSingleError) as exception:
+            return { "message": "Movie was unable to be added. Try again."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -214,6 +221,8 @@ class Neo4jDb:
                 result_transformer_=lambda r: r.single(strict=True).data("name", "userName", "email")
             )
             return records
+        except (ResultNotSingleError) as exception:
+            return { "message": "No such user exist."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -318,7 +327,8 @@ class Neo4jDb:
                 result_transformer_=lambda r: r.single(strict=True).data("user1name", "user2name")
             )
             return record
-        # Capture any errors along with the query and data for traceability
+        except (ResultNotSingleError) as exception:
+            return { "message": "Unable to create friendship between users. Please try again."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -407,7 +417,7 @@ class Neo4jDb:
         if not re.match(pattern, keyword):
             err_msg = "Keyword must be one word."
             logging.error(err_msg)
-            return {"error": err_msg}
+            return {"message": err_msg}
         query = (
             "MATCH (m:movie)-[:hasReview]->(r:review) "
             "WHERE toLower(r.text) CONTAINS toLower($keyword) "
