@@ -58,7 +58,6 @@ database=[your_db]
 ```bash
 python api.py
 ```
---
 By default, the API will be available at: `http://127.0.0.1:5000/api/v1`
 
 ### 6. Access the Query GUI
