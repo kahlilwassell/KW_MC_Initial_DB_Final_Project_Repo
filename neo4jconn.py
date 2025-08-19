@@ -261,7 +261,7 @@ class Neo4jDb:
 
     def _find_and_return_reviews_by_user(self, username):
         query = (
-            "MATCH path=(u:user {userName: $username}) -[r:gaveReview]-> (review:review) <-[:hasReview]- (m:movie) "
+            "MATCH (u:user {userName: $username}) -[r:gaveReview]-> (review:review) <-[:hasReview]- (m:movie) "
             "ORDER BY review.reviewId "
             "RETURN m as movie, review, r.reviewDate as review_date"
         )
@@ -391,10 +391,13 @@ class Neo4jDb:
 
     def _find_and_return_movie_recommendations(self, username):
         query = (
-            "MATCH path=(u:user {userName: $username}) -[:isFriendsWith*1..2]- (other:user) -[:wantsToWatch]- (m:movie) "
-            "WHERE u <> other "
-            "RETURN DISTINCT other as person, length(path) AS degree, m as recommendation "
-            "ORDER BY recommendation.name, person, degree;"
+            """
+            MATCH friendshipPath = (u:user {userName: $username})-[:isFriendsWith*1..2]-(other:user)
+            MATCH (other)-[:wantsToWatch]->(m:movie)
+            WHERE u <> other
+            RETURN DISTINCT other AS person, length(friendshipPath) AS degree, m AS recommendation
+            ORDER BY recommendation.name, person, degree;
+            """
         )
         try:
             records = self.driver.execute_query(
