@@ -33,7 +33,7 @@ def create_app(config):
 
     @ver_bp.route("/movie/")
     def invalid_path(): # Ideally would want to implement form validation, but simple hack to sidestep frontend work .
-        return { "message": "Invalid path. You probably meant to hit the /movie/title. If you are accessing through the GUI please input a title."}
+        return {"message": "Invalid path. You probably meant to hit the /movie/title. If you are accessing through the GUI please input a title."}
 
     # checked and tested
     @ver_bp.route("/movie/<title>")
@@ -160,7 +160,7 @@ def create_app(config):
     @ver_bp.route("/ui")
     def ui_console():
         return render_template(
-            "query_console.html",
+            "query_ui.html",
             base_url="/api/v1",
             endpoints=[
                 "GET /movie/:title",

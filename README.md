@@ -1,56 +1,70 @@
-# Project Overview
-Contirbutors : Kahlil Wassell and Matt Chen
-App: Movie Rating & Discovery
-Stack: Neo4j (DB), Python
+# Movie Rating And Discovery
 
-Core Features:
-1. User profiles, ratings, watchlists
-2. Friendships and "friend-of-friend" logic
-3. Movie discovery by genres, actors, directors
-4. Recommendation system using ratings and social graph
+Contributors: Kahlil Wassell, Matt Chen  
+Stack: Neo4j (Graph Database), Python (Flask), JavaScript (Frontend)  
 
-## Timeline Plan (Aug 6 - Aug 18)
-### Aug 6-7 (Today-Tomorrow): Finalize Design and Data
-- [ ] Clean and structure your dataset to fit the Neo4j model
-- [ ] Define and finalize your graph schema in Neo4j
-Nodes: User, Movie, Actor, Director, Genre, Watchlist
-Relationships: RATED, HAS_WATCHLIST, INCLUDES, FRIENDS_WITH, DIRECTED, FEATURED_IN, HAS_GENRE
+A graph powered web application for exploring movies, building watchlists, and discovering recommendations through social and rating data.  
 
-### Aug 8–10 (Thurs–Sat): Backend App and Data Load Scripts
-Build a Python script to load users, movies, connections, etc. into Neo4j
-Add logic to avoid duplicates
-- [ ] Implement core functions:
-- [ ] Add movie to watchlist
-- [ ] Rate a movie
-- [ ] View friend's or friend's friends' ratings
-- [ ] Recommend based on friend network
+---
 
-### Aug 11–13 (Sun-Tues): GUI Interface
-Design a simple interface that:
-Lets user select a query, enter inputs, and view results.
+## Project Overview
 
-### Aug 14–15 (Wed-Thurs): Query Implementation & Testing
-- [ ] Implement queries using Cypher
-- [ ] Create user friendly labels for the GUI
-- [ ] Validate outputs and fix edge cases
+The app leverages Neo4j as the backend database and a Flask API to serve movie and user data to a lightweight web interface.  
 
-### Aug 16 (Fri): Documentation & Final PDF
-Write final report:
-- [ ] Description, schema, data sources
-- [ ] Final ER and  relational models (revised for graph if needed)
-- [ ] Screenshots of app and query outputs
-- [ ] Final Cypher query listing
+### Core Features
+1. User profiles – Create users with watchlists, ratings, and reviews.  
+2. Social graph – Connect friends and explore "friends of friends" relationships.  
+3. Movie discovery – Search by genres, actors, directors.  
+4. Recommendations – Personalized suggestions using ratings and social connections.  
+5. Interactive query GUI – A built-in web console for testing endpoints against the Neo4j graph.  
 
-### Aug 17 (Sat): Final Testing & Polish
-- [ ] Run through demo
-- [ ] Polish GUI/anything else we need to tie up
+---
 
-### Aug 18 (Sun): Submission & Presentation Prep
-- [ ] Submit PDF report
+## Installation & Setup
 
-# Installing necessary libraries
-1. Create a virtual environment in the directory where you cloned the repo
-2. run `pip install -r requirements.txt` to install the required modules.
+### 1. Clone the repository
+```bash
+    git clone https://github.com/kahlilwassell/KW_MC_Initial_DB_Final_Project_Repo.git
+```
 
-# References
-https://neo4j.com/docs/python-manual/current/
+### 2. Create A Virtual Environment
+```bash
+    python3 -m venv venv
+    source venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
+    pip install -r requirements.txt
+```
+
+### 4. Configure Neo4j
+- Create a Neo4j database (local or AuraDB cloud).
+- Update your connection details in config.ini:
+```ini
+[Flask]
+    version=1
+
+    [Neo4jdb]
+    scheme=neo4j
+    host_name=127.0.0.1
+    port=7687
+    user=neo4j
+    password=[your_password]
+    database=[your_db]
+```
+
+### 5. Run Flask Server
+```bash
+    python api.py
+```
+--
+By default, the API will be available at: `http://127.0.0.1:5000/api/v1`
+
+### 6. Access the Query GUI
+Navigate to: `http://127.0.0.1:5000/api/v1/ui`
+
+## References
+- [Neo4j Python Driver Documentation](https://neo4j.com/docs/python-manual/current/)  
+- [Flask Documentation](https://flask.palletsprojects.com/)  
+- [Cypher Query Language Reference](https://neo4j.com/developer/cypher/)  

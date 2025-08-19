@@ -41,7 +41,7 @@ class Neo4jDb:
             return records
         except (ResultNotSingleError) as exception:
             print(exception)
-            return { "message": "No such movie title exist."}
+            return {"message": "No such movie title exist."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -64,9 +64,9 @@ class Neo4jDb:
             )
             return records
         except (GqlError) as exception:
-            return { "message": f"{exception.message}" }
+            return {"message": f"{exception.message}"}
         except (ResultNotSingleError) as exception:
-            return { "message": "Movie was unable to be added. Try again."}
+            return {"message": "Movie was unable to be added. Try again."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -87,7 +87,7 @@ class Neo4jDb:
         try:
             records = self.driver.execute_query(
                 query, title=title, genres=genres, 
-                database_=self.database,routing=RoutingControl.READ,
+                database_=self.database, routing=RoutingControl.READ,
                 result_transformer_=lambda r: r.data("movie", "genres")
             )
             return records
@@ -222,7 +222,7 @@ class Neo4jDb:
             )
             return records
         except (ResultNotSingleError) as exception:
-            return { "message": "No such user exist."}
+            return {"message": "No such user exist."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise
@@ -269,7 +269,7 @@ class Neo4jDb:
             records = self.driver.execute_query(
                 query, username=username,
                 database_=self.database, routing_=RoutingControl.READ,
-                result_transformer_=lambda r: r.data("movie","review","review_date")
+                result_transformer_=lambda r: r.data("movie", "review", "review_date")
             )
             return records
         except (DriverError, Neo4jError) as exception:
@@ -328,7 +328,7 @@ class Neo4jDb:
             )
             return record
         except (ResultNotSingleError) as exception:
-            return { "message": "Unable to create friendship between users. Please try again."}
+            return {"message": "Unable to create friendship between users. Please try again."}
         except (DriverError, Neo4jError) as exception:
             logging.error("%s raised an error: \n%s", query, exception)
             raise

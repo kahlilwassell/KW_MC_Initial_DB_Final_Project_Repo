@@ -18,7 +18,7 @@ def omdb(imdb_id):
     return r.json()
 
 
-# collect all rows for later de-duplication
+# collect all rows for later deduplication
 actor_edges = []
 director_edges = []
 
