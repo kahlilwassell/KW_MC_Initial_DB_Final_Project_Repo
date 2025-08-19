@@ -24,18 +24,18 @@ The app leverages Neo4j as the backend database and a Flask API to serve movie a
 
 ### 1. Clone the repository
 ```bash
-    git clone https://github.com/kahlilwassell/KW_MC_Initial_DB_Final_Project_Repo.git
+git clone https://github.com/kahlilwassell/KW_MC_Initial_DB_Final_Project_Repo.git
 ```
 
 ### 2. Create A Virtual Environment
 ```bash
-    python3 -m venv venv
-    source venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 ### 3. Install dependencies
 ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 4. Configure Neo4j
@@ -43,20 +43,20 @@ The app leverages Neo4j as the backend database and a Flask API to serve movie a
 - Update your connection details in config.ini:
 ```ini
 [Flask]
-    version=1
+version=1
 
-    [Neo4jdb]
-    scheme=neo4j
-    host_name=127.0.0.1
-    port=7687
-    user=neo4j
-    password=[your_password]
-    database=[your_db]
+[Neo4jdb]
+scheme=neo4j
+host_name=127.0.0.1
+port=7687
+user=neo4j
+password=[your_password]
+database=[your_db]
 ```
 
 ### 5. Run Flask Server
 ```bash
-    python api.py
+python api.py
 ```
 --
 By default, the API will be available at: `http://127.0.0.1:5000/api/v1`
